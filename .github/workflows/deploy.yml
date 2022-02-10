@@ -1,7 +1,7 @@
-name: Node CI
+name: The Deploy
 
 on:
-  pull_request:
+  push:
     branches: [master, preprod]
 jobs:
   test_pull_request:
@@ -14,3 +14,8 @@ jobs:
       - run: npm ci
       # - run: npm test
       - run: npm run build
+      - uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
