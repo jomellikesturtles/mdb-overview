@@ -1,2 +1,5 @@
 {
+  "yaml.schemas": {
+      "https://json.schemastore.org/github-workflow.json": "file:///d%3A/workspaces/mdb/mdb-overview/mdb-overview/.github/workflows/deploy.yml"
+    }
 }
