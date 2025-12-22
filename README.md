@@ -165,23 +165,21 @@ ifunds
 
 
 
+You are a senior developer. We are making a static portfolio website,
+based on the current structure of the code. 
+
+copy the look and feel of an apple site,
+preferrably https://www.apple.com/ph/macbook-pro/.
+
+The page must have:
+
+- 
+- html templating
+- 
+
+
+. For images, use a 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+generate svg that contains logo of:xxx,xxx. i can use for svg spriting.
