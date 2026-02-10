@@ -1,4 +1,5 @@
 :root {
+  /* --bg-color: #ddd2d2; */
   --bg-color: #000000;
   --bg-secondary: #1d1d1f;
   --text-primary: #f5f5f7;
@@ -556,7 +557,7 @@ input {
   .section-headline { font-size: 40px; }
   .grid { grid-template-columns: 1fr; }
   .span-6, .span-12 { grid-column: span 1; }
-  
+
   .projects-container { gap: 40px; }
 }
 

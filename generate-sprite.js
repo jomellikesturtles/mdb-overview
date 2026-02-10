@@ -1,34 +1,39 @@
 const fs = require('fs');
 const path = require('path');
 
-const inputDir = 'vanilla-portfolio/assets/techs';
-const outputFile = 'vanilla-portfolio/assets/techs-sprite.svg';
+const logosDir = path.join(__dirname, 'tech-logos');
+const outputFile = path.join(logosDir, 'sprite.svg');
 
-const files = fs.readdirSync(inputDir).filter(file => file.endsWith('.svg'));
+const files = fs.readdirSync(logosDir).filter(file => file.endsWith('.svg') && file !== 'sprite.svg');
 
 let symbols = '';
 
 files.forEach(file => {
-    const filePath = path.join(inputDir, file);
-    let content = fs.readFileSync(filePath, 'utf8');
-    const id = path.basename(file, '.svg');
+    const filePath = path.join(logosDir, file);
+    const content = fs.readFileSync(filePath, 'utf8');
+    const id = file.replace('.svg', '');
 
-    // Extract viewBox
-    const viewBoxMatch = content.match(/viewBox=["']([^"']*)["']/);
-    let viewBox = viewBoxMatch ? viewBoxMatch[1] : '0 0 24 24'; // Default fallback
+    // Simple check for SVG
+    if (content.trim().startsWith('<svg') || content.trim().startsWith('<?xml')) {
+        // Extract viewBox
+        const viewBoxMatch = content.match(/viewBox="([^"]+)"/);
+        const viewBox = viewBoxMatch ? viewBoxMatch[1] : '0 0 24 24'; // Default if not found
 
-    // Extract content inside <svg> tags
-    // This regex looks for the opening <svg ...> tag and the closing </svg> tag
-    // and captures everything in between.
-    const bodyMatch = content.match(/<svg[^>]*>([\s\S]*)<\/svg>/i);
-    
-    if (bodyMatch) {
-        let body = bodyMatch[1];
-        // simple cleanup to remove XML declaration if present inside (unlikely but possible)
-        body = body.replace(/<\?xml.*?\?>/, '');
-        symbols += `<symbol id="${id}" viewBox="${viewBox}">${body}</symbol>\n`;
+        // Extract content inside <svg> tags
+        // This regex tries to capture everything between the first > of <svg...> and the last </svg>
+        const bodyMatch = content.match(/<svg[^>]*>([\s\S]*?)<\/svg>/);
+        
+        if (bodyMatch) {
+            const body = bodyMatch[1];
+            symbols += `<symbol id="${id}" viewBox="${viewBox}">
+${body}
+</symbol>
+`;
+        } else {
+            console.warn(`Could not parse SVG content for ${file}`);
+        }
     } else {
-        console.warn(`Could not parse SVG content for ${file}`);
+        console.warn(`Skipping non-SVG file (likely PNG renamed): ${file}`);
     }
 });
 
