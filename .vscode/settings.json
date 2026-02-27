@@ -1,2 +1,27 @@
 {
+  "yaml.schemas": {
+      "https://json.schemastore.org/github-workflow.json": "file:///d%3A/workspaces/mdb/mdb-overview/mdb-overview/.github/workflows/deploy.yml"
+    },
+    "workbench.colorCustomizations": {
+      "editor.lineHighlightBackground": "#1073cf2d",
+      "editor.lineHighlightBorder": "#9fced11f",
+      "activityBar.activeBackground": "#136328",
+      "activityBar.background": "#136328",
+      "activityBar.foreground": "#e7e7e7",
+      "activityBar.inactiveForeground": "#e7e7e799",
+      "activityBarBadge.background": "#9679e5",
+      "activityBarBadge.foreground": "#15202b",
+      "commandCenter.border": "#e7e7e799",
+      "sash.hoverBorder": "#136328",
+      "statusBar.background": "#0b3817",
+      "statusBar.foreground": "#e7e7e7",
+      "statusBarItem.hoverBackground": "#136328",
+      "statusBarItem.remoteBackground": "#0b3817",
+      "statusBarItem.remoteForeground": "#e7e7e7",
+      "titleBar.activeBackground": "#0b3817",
+      "titleBar.activeForeground": "#e7e7e7",
+      "titleBar.inactiveBackground": "#0b381799",
+      "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.color": "#0b3817"
 }
