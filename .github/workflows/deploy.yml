@@ -9,11 +9,12 @@ permissions:
   pages: write
   id-token: write
 
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
+      pages: write
       id-token: write
     steps:
       - name: Print
@@ -26,7 +27,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3 # Uploads the static files
         with:
-          path: './vanilla-portfolio' # Assumes your files are in the root directory
+          path: "./vanilla-portfolio" # Assumes your files are in the root directory
       - name: Print
         run: echo "Deploying to Github Pages"
 
