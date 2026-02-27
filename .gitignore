@@ -47,3 +47,5 @@ Thumbs.db
 # copies
 /kopya=kopya
 hyperlight-websites
+.playwright-browsers
+.firebase

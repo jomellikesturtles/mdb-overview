@@ -1,21 +1,36 @@
-name: The Deploy
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [master, preprod]
+    branches: [main] # Triggers the workflow on push to the main branch
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+
 jobs:
-  test_pull_request:
+  deploy:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - name: Print
+        run: echo "Checking out"
+      - name: Checkout
+        uses: actions/checkout@v4 # Use the checkout action to get your code
+      - name: Print
+        run: echo "Uploading artifact"
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3 # Uploads the static files
         with:
-          node-version: 12
-      - run: npm ci
-      # - run: npm test
-      - run: npm run build --prod
-      - uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only hosting
-        env:
-          FIREBASE_TOKEN: ${{secrets.FIREBASE_TOKEN}}
+          path: './vanilla-portfolio' # Assumes your files are in the root directory
+      - name: Print
+        run: echo "Deploying to Github Pages"
+
+      - name: Deploy to GitHub Pages
+        if: ${{ !env.ACT }}
+        id: deployment
+        uses: actions/deploy-pages@v4 # The official GitHub Pages deployment action
