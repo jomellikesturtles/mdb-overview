@@ -1,3 +1,5 @@
+actual project is in /vanilla-portfolio
+
 
 ## Contents
 
@@ -10,18 +12,6 @@
 
 This project is overview of the project. Consumer 'learn more' about the project. This App will demonstrate Performance, responsive, PWA, best pracitces, Accessibility.
 
-## Development
-
-Done in Angular. Can be done with basic javascript.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
 ## Further help
 
 [Project Confluence](https://media-database.atlassian.net/wiki/spaces/MDB/pages/)
@@ -32,12 +22,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ## Tests
 
 - title, compatibility, elements present
-
-
-portf
-https://rairulyle.me/
-https://www.apple.com/ph/apple-tv-4k/
-https://radnaabazar.vercel.app/en
 
 A results-driven, articulate and analytical software engineer who can think out of the box. Strong in design and integration problem solving skills. Skilled using Angular, AngularJS, HTML,Cascading Style Sheets CSS, and Angular Material as front end and JavaScript, and NodeJS for back end. Always looking forward to learning new technologies and tools to improve my skills. Enjoy collaborating with teammates or working alone if need arises
 
