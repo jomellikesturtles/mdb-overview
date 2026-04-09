@@ -19,6 +19,7 @@
 </head>
 
 <body>
+  <div id="cursor-spotlight" class="spotlight-overlay"></div>
   <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
     <symbol id="angular-material" viewBox="0 0 250 250">
 
@@ -396,6 +397,15 @@
         </g>
       </g>
     </symbol>
+    <symbol id="icon-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </symbol>
+    <symbol id="icon-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round">
+      <line x1="22" y1="2" x2="11" y2="13"></line>
+      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+    </symbol>
   </svg>
 
 
@@ -409,8 +419,11 @@
         <span class="nav-logo">JS</span>
         <ul class="nav-list">
           <li><a href="#intro">Intro</a></li>
+          <li><a href="#about">About</a></li>
           <li><a href="#experience">Experience</a></li>
           <li><a href="#projects">Projects</a></li>
+          <li><a href="#tech">Tech</a></li>
+          <li><a href="#education">Education</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </div>
@@ -419,11 +432,13 @@
     <!-- INTRO SECTION -->
     <section id="intro" class="section section-intro">
       <div class="section-content text-center fade-in-on-scroll">
-        <h1 class="hero-headline">Fullstack Developer.</h1>
-        <p class="hero-subheadline">Crafting digital experiences with precision and passion.</p>
+        <h1 class="hero-headline">Leading the evolution of legacy systems into<br><span
+            class="text-gradient">high-performance ecosystems.</span>
+        </h1>
+        <p class="hero-subheadline">Specialized in <span id="role-cycle">Angular 17</span>.</p>
 
         <div class="intro-actions">
-          <a href="#" class="button cv-button">DOWNLOAD CV</a>
+          <a href="../Saligumba_Jommel.pdf" download="Saligumba_Jommel" class="button cv-button">DOWNLOAD CV</a>
           <div class="social-circles">
             <a href="https://github.com/jomellikesturtles/" target="_blank" rel="noopener" class="circle-btn"
               aria-label="GitHub">
@@ -436,19 +451,72 @@
               aria-label="LinkedIn">
               <svg viewBox="0 0 24 24" class="icon">
                 <path
-                  d="M19 3A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H19M18.5 18.5V13.2A3.26 3.26 0 0 0 15.24 9.94C14.39 9.94 13.4 10.46 12.92 11.24V10.13H10.13V18.5H12.92V13.57C12.92 12.8 13.54 12.17 14.31 12.17A1.4 1.4 0 0 1 15.71 13.57V18.5H18.5M6.88 8.56A1.68 1.68 0 0 0 8.56 6.88C8.56 5.95 7.81 5.19 6.88 5.19A1.69 1.69 0 0 0 5.19 6.88C5.19 7.81 5.95 8.56 6.88 8.56M8.27 18.5V10.13H5.5V18.5H8.27Z" />
+                  d="M19 3A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H19M18.5 18.5V13.2A3.26 3.26 0 0 0 15.24 9.94C14.39 9.94 13.4 10.46 12.92 11.24V10.13H10.13V18.5H12.92V13.57C12.92 12.8 13.54 12.17 14.31 12.17A1.4 1.4 0 0 1 15.71 13.57V18.5H18.5M6.88 8.56A1.68 1.68 0 0 0 8.56 6.88C8.56 5.95 7.81 5.19 6.88 5.19A1.69 1.69 0 0 0 5.19 6.88C5.19 7.81 5.95 8.56 6.88 8.56M8.27 18.5V10.13H5.5V18.5H8.27Z" />
               </svg>
             </a>
           </div>
         </div>
 
-        <div class="hero-image-container">
-          <!-- Responsive Image with fetchpriority -->
-          <picture>
-            <source srcset="assets/laptop-with-code.jpg" media="(min-width: 800px)">
-            <img src="assets/laptop-with-code.jpg" alt="Laptop displaying code" class="hero-image" fetchpriority="high"
-              width="800" height="500">
-          </picture>
+      </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="section section-intro">
+      <div class="section-content about-grid text-center fade-in-on-scroll">
+        <div class="about-text">
+          <h1 class="hero-headline">Engineering with Ownership.</h1>
+          <p class="hero-subheadline">
+            I am Jommel, a Senior Fullstack Engineer based in Manila. For over 8 years, I've specialized in
+            transforming complex business requirements into scalable technical architectures using Angular and Java
+            Spring Boot.
+
+            I don't just write code; I lead high-stakes migrations, architect reusable library ecosystems for
+            multi-country deployments,
+            and mentor emerging talent. I bridge the gap between engineering, QA, and DevOps to ensure zero-downtime
+            delivery and
+            robust system integrity.
+
+            I've embraced AI-assisted development as a serious productivity engine - using it daily to accelerate
+            delivery
+            while maintaining a disciplined focus on security, performance, and long-term maintainability.</p>
+
+          <div class="intro-actions">
+            <!-- <a href="../Saligumba_Jommel.pdf" download="Saligumba_Jommel" class="button cv-button">DOWNLOAD CV</a> -->
+            <div class="social-circles">
+              <a href="https://github.com/jomellikesturtles/" target="_blank" rel="noopener" class="circle-btn"
+                aria-label="GitHub">
+                <svg viewBox="0 0 24 24" class="icon">
+                  <path
+                    d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z" />
+                </svg>
+              </a>
+              <a href="https://www.linkedin.com/in/jommelsaligumba/" target="_blank" rel="noopener" class="circle-btn"
+                aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24" class="icon">
+                  <path
+                    d="M19 3A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H19M18.5 18.5V13.2A3.26 3.26 0 0 0 15.24 9.94C14.39 9.94 13.4 10.46 12.92 11.24V10.13H10.13V18.5H12.92V13.57C12.92 12.8 13.54 12.17 14.31 12.17A1.4 1.4 0 0 1 15.71 13.57V18.5H18.5M6.88 8.56A1.68 1.68 0 0 0 8.56 6.88C8.56 5.95 7.81 5.19 6.88 5.19A1.69 1.69 0 0 0 5.19 6.88C5.19 7.81 5.95 8.56 6.88 8.56M8.27 18.5V10.13H5.5V18.5H8.27Z" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-image">
+          <div class="profile-container">
+            <div class="profile-wrapper">
+              <div class="profile-image-container">
+                <div class="profile-image-inner">
+                  <img src="assets/about/20240421_090514.webp" alt="Jommel Saligumba" id="profile-img">
+                </div>
+              </div>
+              <button type="button" class="profile-button" id="mood-toggle" aria-label="Switch photo mood">
+                <svg class="profile-svg" viewBox="0 0 506 506">
+                  <circle cx="253" cy="253" r="250" class="profile-circle"></circle>
+                </svg>
+                <span class="profile-label">click me 👀</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -458,21 +526,21 @@
     <!-- EXPERIENCE SECTION -->
     <section id="experience" class="section section-experience">
 
-      <svg>
+      <!-- <svg>
         <a class="icon-twitter" href="https://twitter.com/caranddriver"><svg class="icon-small">
             <use xlink:href="#angular" />
         </a>
-      </svg>
+      </svg> -->
       <div class="section-content">
         <h2 class="section-headline">Experience.</h2>
         <p class="section-intro">Years of dedication to the craft.</p>
 
         <div class="stats-grid grid">
           <!-- These custom elements will be styled to look like big stats -->
-          <stats-span article='{ "statsNumber": "7+", "statsLabel": "Years Experience" }'></stats-span>
-          <stats-span article='{ "statsNumber": "40+", "statsLabel": "Deployments" }'></stats-span>
-          <stats-span article='{ "statsNumber": "200+", "statsLabel": "Incidents Solved" }'></stats-span>
-          <stats-span article='{ "statsNumber": "8+", "statsLabel": "Major Projects" }'></stats-span>
+          <stats-span article='{ "statsNumber": "8+", "statsLabel": "Years Legacy Modernization" }'></stats-span>
+          <stats-span article='{ "statsNumber": "50+", "statsLabel": "Production Releases Led" }'></stats-span>
+          <stats-span article='{ "statsNumber": "200+", "statsLabel": "Production Incidents Solved" }'></stats-span>
+          <stats-span article='{ "statsNumber": "15+", "statsLabel": "Associate Developers Mentored" }'></stats-span>
         </div>
       </div>
     </section>
@@ -483,28 +551,35 @@
     <section id="professional-experience" class="section section-prof-experience">
       <div class="section-content">
         <h2 class="section-headline">Professional Experience.</h2>
-        <p class="section-intro">A timeline of impact and growth.</p>
+        <p class="section-intro">A timeline of technical ownership and leadership.</p>
 
         <div class="prof-timeline fade-in-on-scroll">
           <!-- Job 3 (Latest) -->
           <experience-article article='{
               "date": "2025 - Present",
-              "title": "Full-Stack Developer @ Infor PSCC",
+              "title": "Full-Stack Software Engineer @ Infor PSCC",
               "description": "Contributing to a pioneering ESG (Environmental, Social, and Governance) platform used by major European corporate clients. Enabling scalable compliance, reporting, and data-driven sustainability decision-making."
            }'></experience-article>
 
           <!-- Job 2 -->
           <experience-article article='{
               "date": "2020 - 2025",
-              "title": "Software Engineer @ Manulife IT Delivery Center Asia",
-              "description": "Successfully delivered multiple Manulife Customer applications into production, ensuring seamless user experiences and meeting rigorous quality standards for financial systems."
+              "title": "Full-Stack Software Engineer @ Manulife IT Delivery Center Asia",
+              "description": "Led an enterprise-wide frontend modernization, successfully migrating legacy Angular 5 systems to v17, resulting in a 40% reduction in technical debt. Architected a reusable universal-form library supporting dynamic rendering across multi-country projects. Optimized performance and reliability by implementing Redis caching and integrating automated security scanning (Snyk/Fortify) into CI/CD pipelines."
            }'></experience-article>
 
           <!-- Job 1 -->
           <experience-article article='{
               "date": "2018 - 2020",
-              "title": "Software Developer @ UST Global",
-              "description": "Developed enhancements and ground-up applications using Java, Spring, AngularJS, and Oracle within a Scrum framework. Collaborated closely with onsite teams in San Antonio, Texas, adhering to strict agile ceremonies and delivery cycles."
+              "title": "Junior Software Developer @ UST Global",
+              "description": "Developed ground-up applications using Java, Spring, and Oracle. Collaborated closely with onsite teams in San Antonio, Texas, to deliver scalable business solutions within a strict Scrum framework."
+           }'></experience-article>
+
+          <!-- Job 0 -->
+          <experience-article article='{
+              "date": "2016 - 2018",
+              "title": "Technical & Customer Support @ Convergys",
+              "description": "Spearheaded technical resolution for AT&T customers, diagnosing complex connectivity, cellular, and digital service issues while maintaining top-tier performance metrics for First Call Resolution (FCR)."
            }'></experience-article>
         </div>
       </div>
@@ -519,26 +594,35 @@
         <p class="section-intro">A showcase of technical capability.</p>
 
         <div class="projects-container">
-          <!-- Using the Custom Element for Projects -->
+          <!-- The Golden Project: MDB -->
+          <project-article data-feature="mdbProject" article='{
+              "isGolden": true,
+              "techStacks": ["angular", "spring", "docker", "postgres", "rest-api", "microservices"],
+              "title": "MDB (Media Data Base)",
+              "description": "An event-driven media ecosystem designed for extreme performance. Features a distributed microservices architecture using Kafka for seamless inter-service communication, a high-performance Angular/Electron frontend, and robust Spring Boot backends (API & BFF). Engineered with Hyperlight principles and automated DevOps pipelines.",
+              "imgUrl":"assets/laptop-with-code.jpg",
+              "deployCmd": "docker-compose up -d",
+              "githubUrl": "https://github.com/jomellikesturtles/mdb-platform"}'></project-article>
+
           <project-article article='{
               "backgroundColor": "#1d1d1f",
               "techStacks": ["react","spring","docker","mysql","aws"],
               "title": "DENR Booking System",
-              "description": "Mountaineering booking web application system for managing booking, including meeting rooms, with payment features.",
+              "description": "Architected a ground-up mountaineering booking ecosystem for environmental resource management. Implemented complex scheduling logic and secure payment integrations to handle high-volume seasonal traffic.",
               "imgUrl":"assets/laptop-with-code.jpg"}'></project-article>
 
           <project-article article='{
               "backgroundColor": "#1d1d1f",
               "techStacks": ["angular","spring","docker","mysql","aws"],
               "title": "U-Trade Platform",
-              "description": "Registration and Admin pages for an online stock trading platform providing real-time market access.",
+              "description": "Engineered high-stakes registration and administrative modules for a real-time stock trading platform. Optimized for sub-second data processing and seamless market access during peak trading hours.",
               "imgUrl":"assets/laptop-with-code.jpg" }'></project-article>
 
           <project-article article='{
               "backgroundColor": "#1d1d1f",
-              "techStacks": ["java","c#"],
+              "techStacks": ["angular","spring","mysql"],
               "title": "XBin Timekeeper",
-              "description": "Time keeping application aimed to manage employee work hours effectively during remote work shifts.",
+              "description": "Designed and delivered an enterprise time-management solution to optimize remote work productivity. Features automated shift tracking and comprehensive reporting for distributed teams.",
               "imgUrl":"assets/laptop-with-code.jpg" }'></project-article>
         </div>
       </div>
@@ -547,7 +631,7 @@
     <div class="divider"></div>
 
     <!-- THE BLUEPRINT SECTION (System Architecture) -->
-    <section id="blueprint" class="section section-blueprint">
+    <section id="blueprint" class="section section-blueprint" data-feature="blueprint">
       <div class="section-content">
         <h2 class="section-headline">The Blueprint.</h2>
         <p class="section-intro">Architecting scalable solutions from the ground up.</p>
@@ -577,7 +661,7 @@
     <div class="divider"></div>
 
     <!-- THE WORKFLOW SECTION (Methodology) -->
-    <section id="workflow" class="section section-workflow">
+    <section id="workflow" class="section section-workflow" data-feature="workflow">
       <div class="section-content">
         <h2 class="section-headline">The Workflow.</h2>
         <p class="section-intro">From concept to deployment, precision at every step.</p>
@@ -612,58 +696,139 @@
 
     <div class="divider"></div>
 
-    <!-- TECHNOLOGY / FAVORITES SECTION (Using CSS Grid and Sprites) -->
-    <section id="tech" class="section section-tech">
+    <!-- TECHNOLOGY / FAVORITES SECTION (Bento Box Grid) -->
+    <section id="tech" class="section section-tech" data-feature="technologies">
       <div class="section-content">
         <h2 class="section-headline">Technologies.</h2>
-        <div class="grid grid-container">
-          <div class="grid-item span-12 tech-showcase">
-            <h3>Powered by</h3>
-            <div class="tech-icons-wrapper">
-              <!-- SVG Sprites Usage -->
-              <svg class="icon icon-large" role="img" aria-label="Git">
-                <use xlink:href="#git" />
-              </svg>
-              <svg class="icon icon-large" role="img" aria-label="Jenkins">
-                <use xlink:href="#jenkins"/>
-              </svg>
+        <p class="section-intro">Tools and techniques that drive my architectural decisions.</p>
 
-              <!-- Image Sprites (Nav example reused or create new) -->
-              <div class="sprite-demo">
-                <span class="nav-sprite home"></span>
-                <span class="nav-sprite prev"></span>
-                <span class="nav-sprite next"></span>
-              </div>
+        <div class="bento-grid">
+          <!-- Large Card: Core Ecosystem -->
+          <div class="bento-item core-stack">
+            <span class="bento-label">Core Ecosystem</span>
+            <div class="bento-icons">
+              <svg class="icon-large">
+                <use xlink:href="sprite.svg#angular"></use>
+              </svg>
+              <svg class="icon-large">
+                <use xlink:href="sprite.svg#spring"></use>
+              </svg>
+              <svg class="icon-large">
+                <use xlink:href="sprite.svg#microservices"></use>
+              </svg>
             </div>
+            <h3>Enterprise Scaling</h3>
+            <p>Mastering distributed systems with Angular v17 and Java Spring Boot microservices.</p>
+          </div>
 
-            <!-- Responsive Source Set Example -->
-            <div class="tech-logos-grid">
-              <use xlink:href="#node"/>
-              <img src="assets/angular.png" alt="Angular" loading="lazy">
-              <img src="assets/nodejs.png" alt="NodeJS" loading="lazy">
-              <img src="assets/typescript.png" alt="TypeScript" loading="lazy">
+          <!-- Medium Card: DevOps & Cloud -->
+          <div class="bento-item devops-stack">
+            <span class="bento-label">Infrastructure</span>
+            <div class="bento-icons-row">
+              <svg class="icon">
+                <use xlink:href="sprite.svg#docker"></use>
+              </svg>
+              <svg class="icon">
+                <use xlink:href="sprite.svg#aws"></use>
+              </svg>
+              <svg class="icon">
+                <use xlink:href="sprite.svg#azure"></use>
+              </svg>
+            </div>
+            <h3>Cloud Native</h3>
+            <p>Automated deployments and container orchestration with CI/CD integration.</p>
+          </div>
+
+          <!-- Small Card: Optimization -->
+          <div class="bento-item technique-card">
+            <span class="bento-label">Optimization & Latency</span>
+            <div class="technique-preview">
+              <svg class="icon">
+                <use xlink:href="sprite.svg#postgres"></use>
+              </svg>
+            </div>
+            <h3>Performance</h3>
+            <p>Implementing Redis caching and DB query optimization for low-latency APIs.</p>
+          </div>
+
+          <!-- Small Card: Security -->
+          <div class="bento-item technique-card">
+            <span class="bento-label">Security & Compliance</span>
+            <div class="technique-preview">
+              <svg class="icon">
+                <use xlink:href="#rest-api"></use>
+              </svg>
+            </div>
+            <h3>Integrity</h3>
+            <p>Proactive vulnerability resolution using Snyk and Fortify automated scanning.</p>
+          </div>
+
+          <!-- Medium Card: Data -->
+          <div class="bento-item data-stack">
+            <span class="bento-label">Data Architecture</span>
+            <div class="bento-icons-row">
+              <svg class="icon">
+                <use xlink:href="sprite.svg#postgres"></use>
+              </svg>
+              <svg class="icon">
+                <use xlink:href="sprite.svg#mysql"></use>
+              </svg>
+              <svg class="icon">
+                <use xlink:href="sprite.svg#mongodb"></use>
+              </svg>
+            </div>
+            <h3>Reliable Storage</h3>
+            <p>Relational and NoSQL mastery for complex, high-volume data models.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- EDUCATION SECTION -->
+    <section id="education" class="section section-education">
+      <div class="section-content">
+        <h2 class="section-headline">Academic Foundation.</h2>
+        <div class="education-container fade-in-on-scroll">
+          <div class="education-card">
+            <div class="card-details">
+              <span class="date-badge">2011 - 2016</span>
+              <h3>STI College Fairview</h3>
+              <h4>Bachelor of Science in Computer Engineering</h4>
+              <p class="award-text">✨ Academic Awardee</p>
+            </div>
+            <div class="card-visual">
+              <svg class="education-icon">
+                <use xlink:href="sprite.svg#microservices"></use>
+              </svg>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- TARGET SELECTOR DEMO (Hidden until targeted) -->
+    <!-- CONTACT SECTION -->
     <section id="contact" class="section section-contact">
-      <div class="section-content">
-        <h2 class="section-headline">Get in Touch.</h2>
-        <a href="#contact-form" class="button">Contact Me</a>
-
-        <!-- Target Selector: This shows up when #contact-form is the target -->
-        <div id="contact-form" class="modal-overlay">
-          <div class="modal-content">
-            <a href="#contact" class="close-btn">&times;</a>
-            <h3>Send a Message</h3>
-            <form>
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" placeholder="your@email.com">
-              <button type="button">Send</button>
-            </form>
+      <div class="section-content text-left">
+        <h2 class="section-headline" style="margin-bottom: 40px;">Get in Touch.</h2>
+        <div class="contact-actions">
+          <a href="mailto:jommelsaligumba@gmail.com" class="button">Contact Me</a>
+          <div class="social-circles" style="margin-top: 30px; justify-content: left;">
+            <a href="https://github.com/jomellikesturtles/" target="_blank" rel="noopener" class="circle-btn"
+              aria-label="GitHub">
+              <svg viewBox="0 0 24 24" class="icon">
+                <path
+                  d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z" />
+              </svg>
+            </a>
+            <a href="https://www.linkedin.com/in/jommelsaligumba/" target="_blank" rel="noopener" class="circle-btn"
+              aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" class="icon">
+                <path
+                  d="M19 3A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H19M18.5 18.5V13.2A3.26 3.26 0 0 0 15.24 9.94C14.39 9.94 13.4 10.46 12.92 11.24V10.13H10.13V18.5H12.92V13.57C12.92 12.8 13.54 12.17 14.31 12.17A1.4 1.4 0 0 1 15.71 13.57V18.5H18.5M6.88 8.56A1.68 1.68 0 0 0 8.56 6.88C8.56 5.95 7.81 5.19 6.88 5.19A1.69 1.69 0 0 0 5.19 6.88C5.19 7.81 5.95 8.56 6.88 8.56M8.27 18.5V10.13H5.5V18.5H8.27Z" />
+              </svg>
+            </a>
           </div>
         </div>
       </div>
@@ -678,8 +843,62 @@
         <a href="https://www.linkedin.com/in/jommelsaligumba/" target="_blank" rel="noopener">LinkedIn</a>
       </div>
       <p>&copy; 2025 Jommel Saligumba. All rights reserved.</p>
+
+      <div class="lighthouse-badge" data-feature="lighthouseBadge">
+        <div class="lh-score">
+          <div class="lh-circle">100</div>
+          <span class="lh-label">Performance</span>
+        </div>
+        <div class="lh-score">
+          <div class="lh-circle">100</div>
+          <span class="lh-label">Best Practices</span>
+        </div>
+        <div class="lh-score">
+          <div class="lh-circle">95</div>
+          <span class="lh-label">Accessibility</span>
+        </div>
+        <div class="lh-score">
+          <div class="lh-circle">83</div>
+          <span class="lh-label">SEO</span>
+        </div>
+      </div>
     </div>
   </footer>
+
+  <!-- Chat UI -->
+  <div id="chat-pill" class="chat-pill-button" data-feature="chat" aria-label="Open Chat">
+    <svg class="icon">
+      <use xlink:href="#icon-chat"></use>
+    </svg>
+    <span>Chat</span>
+  </div>
+
+  <div id="chat-modal" class="chat-modal-container" data-feature="chat">
+    <div class="chat-modal-header">
+      <button class="chat-close" id="chat-close">&times;</button>
+    </div>
+    <div class="chat-profile" style="justify-content: center; margin: 12px auto;">
+      <div class="chat-avatar">JS</div>
+    </div>
+    <div class="chat-modal-body" id="chat-messages">
+      <!-- <div class="chat-message bot">
+        Hi! How can I help you today?
+      </div> -->
+    </div>
+    <div class="chat-modal-quick-replies">
+      <button class="quick-reply-btn" data-reply="projects">Show Projects</button>
+      <button class="quick-reply-btn" data-reply="stack">Tech Stack</button>
+      <button class="quick-reply-btn" data-reply="resume">Resume</button>
+    </div>
+    <div class="chat-modal-footer">
+      <input type="text" id="chat-input" placeholder="Ask me anything..." autocomplete="off">
+      <button id="chat-send" class="chat-send-btn">
+        <svg class="icon">
+          <use xlink:href="#icon-send"></use>
+        </svg>
+      </button>
+    </div>
+  </div>
 
 </body>
 

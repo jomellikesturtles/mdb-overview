@@ -21,13 +21,35 @@ jobs:
         run: echo "Checking out"
       - name: Checkout
         uses: actions/checkout@v4 # Use the checkout action to get your code
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Minifiers
+        run: npm install -g html-minifier-terser clean-css-cli terser
+
+      - name: Create output folder
+        run: mkdir -p output
+      - name: Copy assets (images, etc)
+        run: cp -r vanilla-portfolio/assets output/
+      - name: Minify HTML (removes comments, whitespace, and inlines minified CSS/JS)
+        run: html-minifier-terser --collapse-whitespace --remove-comments --minify-js true --minify-css true -o output/index.html vanilla-portfolio/index.html
+      - name: Minify CSS                                                                                                   │
+        run: cleancss -o output/styles.css vanilla-portfolio/styles.css
+
+      - name: Minify JS ()
+        run: terser vanilla-portfolio/script.js --compress --mangle -o output/script.js
+
+      - name: Copy root files
+        run: cp vanilla-portfolio/favicon.ico output/ 2>/dev/null || true
       - name: Print
         run: echo "Uploading artifact"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3 # Uploads the static files
         with:
-          path: "./vanilla-portfolio" # Assumes your files are in the root directory
+          path: "./output"
       - name: Print
         run: echo "Deploying to Github Pages"
 
