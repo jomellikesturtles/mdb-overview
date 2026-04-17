@@ -8,7 +8,7 @@ window.addEventListener("load", () => {
     blueprint: false,
     workflow: false,
     technologies: false,
-    tracking: false,
+    tracking: true,
     spotlight: false,
     lazyLoading: false
   };
