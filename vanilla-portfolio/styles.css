@@ -4,7 +4,7 @@
   --bg-secondary: #1d1d1f;
   --text-primary: #f5f5f7;
   --text-secondary: #86868b;
-  --accent-color: #2997ff;
+  --accent-color: #ff8229;
   --font-stack:
     "SF Pro Display", "SF Pro Icons", "Helvetica Neue", "Helvetica", "Arial",
     sans-serif;
@@ -307,7 +307,7 @@ a:hover {
 }
 
 .profile-circle {
-  stroke: #00ff99;
+  stroke: var(--accent-color);
   stroke-width: 4;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -1358,4 +1358,18 @@ input {
     transform: translateX(-50%);
     /* right: auto; if needed to override */
   }
+}
+
+/* --- Lazy Loading Styles --- */
+
+.lazy-img {
+  opacity: 0;
+  filter: blur(10px);
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, filter;
+}
+
+.lazy-img.loaded {
+  opacity: 1;
+  filter: blur(0);
 }

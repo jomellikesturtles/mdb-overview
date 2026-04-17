@@ -1,3 +1,4 @@
+var lazyLoading=false
 window.addEventListener("load", () => {
   // Feature Toggle Configuration
   const FEATURES = {
@@ -6,8 +7,45 @@ window.addEventListener("load", () => {
     lighthouseBadge: false,
     blueprint: false,
     workflow: false,
-    technologies: false
+    technologies: false,
+    tracking: false,
+    spotlight: false,
+    lazyLoading: false
   };
+
+  const spotlight = document.getElementById('cursor-spotlight');
+  if (FEATURES.spotlight) {
+    spotlight.classList.add('spotlight-overlay');
+  }
+
+  lazyLoading = FEATURES.lazyLoading;
+  // Image Lazy Loading Engine
+  const initLazyLoading = () => {
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+            img.onload = () => {
+              img.classList.add('loaded');
+            };
+            observer.unobserve(img);
+          }
+        }
+      });
+    }, {
+      rootMargin: '50px 0px',
+      threshold: 0.01
+    });
+
+    window.lazyImageObserver = imageObserver;
+    document.querySelectorAll('.lazy-img').forEach(img => imageObserver.observe(img));
+  };
+
+  if (FEATURES.lazyLoading) {
+    initLazyLoading();
+  }
 
   // Apply Feature Toggles (including URL parameter overrides)
   const applyFeatureToggles = () => {
@@ -36,8 +74,62 @@ window.addEventListener("load", () => {
 
   applyFeatureToggles();
 
-  // Spotlight Cursor Effect Logic
-  const spotlight = document.getElementById('cursor-spotlight');
+  // Track CV Downloads and Project Links globally
+  document.addEventListener('click', (e) => {
+    if (!window.umami && !!FEATURES.tracking) return;
+
+    const cvBtn = e.target.closest('.cv-button');
+    if (cvBtn) {
+      umami.track('cv_downloaded');
+    }
+
+    const projectLink = e.target.closest('project-article');
+    if (projectLink && e.target.classList.contains('main-card-link')) {
+      const articleAttr = projectLink.getAttribute('article');
+      const title = articleAttr ? JSON.parse(articleAttr).title : 'Unknown Project';
+      umami.track('project_link_clicked', { project: title });
+    }
+  });
+
+  // Track Section Views (3s Linger)
+  const initSectionTracking = () => {
+    const sectionTimers = new Map();
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const sectionId = entry.target.id;
+
+        if (entry.isIntersecting) {
+          if (!sectionTimers.has(sectionId)) {
+            const timer = setTimeout(() => {
+              if (window.umami && !!FEATURES.tracking) {
+                console.log(`[Analytics] User lingered on section [${sectionId}] for 5s`);
+                umami.track('section_viewed', { section_id: sectionId });
+              }
+              sectionObserver.unobserve(entry.target);
+              sectionTimers.delete(sectionId);
+            }, 5000);
+            sectionTimers.set(sectionId, timer);
+          }
+        } else {
+          if (sectionTimers.has(sectionId)) {
+            clearTimeout(sectionTimers.get(sectionId));
+            sectionTimers.delete(sectionId);
+          }
+        }
+      });
+    }, {
+      threshold: 0.2 // Trigger for tall sections
+    });
+
+    document.querySelectorAll('section[id]').forEach(section => {
+      sectionObserver.observe(section);
+    });
+  };
+
+  initSectionTracking();
+
+
   window.addEventListener('mousemove', (e) => {
     const x = e.clientX;
     const y = e.clientY;
@@ -50,7 +142,6 @@ window.addEventListener("load", () => {
 
   // Intersection Observer for Fade In
   const fadeElements = document.querySelectorAll('.fade-in-on-scroll');
-// ...
   const appearOptions = {
     threshold: 0.2,
     rootMargin: "0px 0px -50px 0px"
@@ -94,8 +185,7 @@ window.addEventListener("load", () => {
     'assets/about/20240420_170010.webp',
     'assets/about/PXL_20250630_132541732-EDIT.webp',
     'assets/about/PXL_20250913_102805329.webp',
-    'assets/about/20240420_170020.webp',
-    // 'assets/about/20231103_093902.webp'
+    'assets/about/20240420_170020.webp'
   ];
   let currentMoodIndex = 0;
 
@@ -161,7 +251,7 @@ class StatsSpan extends HTMLElement {
         justify-content: center;
       }
       .stat-number {
-        font-size: 5rem; /* Big Apple-style numbers */
+        font-size: 5rem;
         font-weight: 700;
         line-height: 1;
         background: linear-gradient(to bottom, #fff, #86868b);
@@ -220,6 +310,9 @@ class ProjectArticle extends HTMLElement {
     this.shadowRoot.innerHTML = `
     <link rel="stylesheet" href="styles.css">
     <article class="project-card ${isGolden ? 'golden-project' : ''}">
+      ${val.projectUrl ? `
+        <a href="${val.projectUrl}" target="_blank" rel="noopener" class="main-card-link" aria-label="Visit ${val.title}"></a>
+      ` : ''}
       <div class="project-content">
         <div class="project-header">
            <h3 class="project-title">${val.title}</h3>
@@ -273,8 +366,9 @@ class ProjectArticle extends HTMLElement {
           </div>
         ` : ''}
       </div>
+
       <div class="project-image-wrapper">
-         <img src="${val.imgUrl}" alt="${val.title}" loading="lazy">
+         <img src="${val.imgUrl}" src="${val.imgUrl}" alt="${val.title}" class=" ${lazyLoading ? 'lazy-img' : ''}">
          ${isGolden && !this._isArchitectureView ? `
             <div class="mini-player-overlay">
                <div class="play-icon"></div>
@@ -288,6 +382,7 @@ class ProjectArticle extends HTMLElement {
         display: block;
       }
       .project-card {
+        position: relative;
         background-color: var(--bg-secondary);
         border-radius: 30px;
         overflow: hidden;
@@ -296,17 +391,27 @@ class ProjectArticle extends HTMLElement {
         transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         border: 1px solid rgba(255,255,255,0.05);
       }
+      .main-card-link {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+      }
+      .project-header, .project-actions, .tech-stack, .deploy-badge {
+        position: relative;
+        z-index: 10;
+      }
       .project-card:hover {
         transform: translateY(-10px);
         border-color: rgba(255,255,255,0.1);
         box-shadow: 0 20px 40px rgba(0,0,0,0.4);
       }
-
       .golden-project {
         background: linear-gradient(135deg, #1d1d1f 0%, #000 100%);
         border: 1px solid rgba(41, 151, 255, 0.3);
       }
-
       @media (min-width: 800px) {
         .project-card {
            flex-direction: row;
@@ -314,7 +419,6 @@ class ProjectArticle extends HTMLElement {
            min-height: 450px;
         }
       }
-
       .project-content {
         padding: 40px;
         flex: 1.2;
@@ -322,7 +426,6 @@ class ProjectArticle extends HTMLElement {
         flex-direction: column;
         justify-content: center;
       }
-
       .project-header {
         display: flex;
         align-items: center;
@@ -330,13 +433,11 @@ class ProjectArticle extends HTMLElement {
         gap: 15px;
         margin-bottom: 20px;
       }
-
       .project-title {
         font-size: 36px;
         color: var(--text-primary);
         margin: 0;
       }
-
       .badge {
         background: var(--accent-color);
         color: #fff;
@@ -346,7 +447,6 @@ class ProjectArticle extends HTMLElement {
         text-transform: uppercase;
         font-weight: 700;
       }
-
       .deploy-badge {
         position: relative;
         display: inline-flex;
@@ -359,25 +459,21 @@ class ProjectArticle extends HTMLElement {
         cursor: pointer;
         transition: all 0.3s ease;
       }
-
       .deploy-badge:hover {
         border-color: var(--accent-color);
         background: rgba(41, 151, 255, 0.05);
         box-shadow: 0 0 15px rgba(41, 151, 255, 0.2);
       }
-
       .prompt {
         color: var(--accent-color);
         font-family: monospace;
         font-weight: bold;
       }
-
       .cmd-text {
         color: #fff;
         font-family: 'SF Mono', 'Fira Code', monospace;
         font-size: 12px;
       }
-
       .copy-feedback {
         position: absolute;
         top: -30px;
@@ -393,20 +489,16 @@ class ProjectArticle extends HTMLElement {
         pointer-events: none;
         transition: opacity 0.3s ease;
       }
-
       .copy-feedback.show {
         opacity: 1;
       }
-
       .view-container {
         position: relative;
         min-height: 180px;
       }
-
       .overview-view, .architecture-view {
         transition: all 0.4s ease;
       }
-
       .show-overview .architecture-view {
         opacity: 0;
         transform: translateX(20px);
@@ -414,7 +506,6 @@ class ProjectArticle extends HTMLElement {
         position: absolute;
         top: 0;
       }
-
       .show-arch .overview-view {
         opacity: 0;
         transform: translateX(-20px);
@@ -422,20 +513,17 @@ class ProjectArticle extends HTMLElement {
         position: absolute;
         top: 0;
       }
-
       .project-desc {
         font-size: 19px;
         color: var(--text-secondary);
         line-height: 1.5;
         margin-bottom: 30px;
       }
-
       .tech-stack {
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
       }
-
       .tech-tag {
         font-size: 12px;
         font-weight: 500;
@@ -448,23 +536,19 @@ class ProjectArticle extends HTMLElement {
         color: var(--text-secondary);
         transition: all 0.3s;
       }
-
       .tech-tag:hover {
         background: rgba(255,255,255,0.1);
         color: #fff;
       }
-
       .tech-icon {
         width: 16px;
         height: 16px;
         fill: currentColor;
       }
-
       .arch-list {
         list-style: none;
         padding: 0;
       }
-
       .arch-list li {
         font-size: 16px;
         color: var(--text-secondary);
@@ -472,7 +556,6 @@ class ProjectArticle extends HTMLElement {
         display: flex;
         align-items: center;
       }
-
       .arch-list li::before {
         content: "•";
         color: var(--accent-color);
@@ -481,21 +564,18 @@ class ProjectArticle extends HTMLElement {
         width: 1em;
         margin-left: 0;
       }
-
       .arch-list strong {
         color: var(--text-primary);
         margin-right: 8px;
         min-width: 100px;
         display: inline-block;
       }
-
       .project-actions {
         margin-top: 40px;
         display: flex;
         gap: 15px;
         flex-wrap: wrap;
       }
-
       .toggle-btn, .source-btn {
         background: transparent;
         color: var(--accent-color);
@@ -511,35 +591,29 @@ class ProjectArticle extends HTMLElement {
         gap: 8px;
         font-size: 14px;
       }
-
       .toggle-btn:hover, .source-btn:hover {
         background: var(--accent-color);
         color: #fff;
       }
-
       .source-icon {
         width: 18px;
         height: 18px;
         fill: currentColor;
       }
-
       .project-image-wrapper {
         flex: 1;
         position: relative;
         overflow: hidden;
       }
-
       .project-image-wrapper img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.5s ease;
       }
-
       .project-card:hover .project-image-wrapper img {
         transform: scale(1.1);
       }
-
       .mini-player-overlay {
         position: absolute;
         bottom: 20px;
@@ -556,7 +630,6 @@ class ProjectArticle extends HTMLElement {
         font-weight: 500;
         border: 1px solid rgba(255,255,255,0.1);
       }
-
       .play-icon {
         width: 0;
         height: 0;
@@ -580,6 +653,12 @@ class ProjectArticle extends HTMLElement {
         feedback.classList.add('show');
         setTimeout(() => feedback.classList.remove('show'), 2000);
       };
+    }
+
+    // Register with lazy image observer
+    const img = this.shadowRoot.querySelector('.lazy-img');
+    if (img && window.lazyImageObserver) {
+      window.lazyImageObserver.observe(img);
     }
   }
   attributeChangedCallback(attrName, oldVal, newVal) {
@@ -612,19 +691,16 @@ class ExperienceArticle extends HTMLElement {
       </div>
     </div>
     <style>
-      /* Ensure host behaves like a block to not break layout */
       :host {
         display: block;
       }
-      /* Re-apply specific timeline styles if they don't cascade into Shadow DOM */
       .prof-timeline-item {
         position: relative;
         margin-bottom: 60px;
-        /* Reset border since the parent container has the border-left */
       }
       .prof-timeline-marker {
         position: absolute;
-        left: -46px; /* Match the global CSS */
+        left: -46px;
         top: 5px;
         width: 12px;
         height: 12px;
@@ -682,7 +758,10 @@ window.customElements.define("experience-article", ExperienceArticle);
 
   if (chatPill && chatModal) {
     chatPill.addEventListener('click', () => {
-      chatModal.classList.toggle('show');
+      const isShowing = chatModal.classList.toggle('show');
+      if (window.umami && !!FEATURES.tracking && isShowing) {
+        umami.track('chat_opened');
+      }
     });
 
     chatClose.addEventListener('click', () => {
@@ -702,6 +781,9 @@ window.customElements.define("experience-article", ExperienceArticle);
       if (text) {
         addMessage(text, 'user');
         chatInput.value = '';
+        if (window.umami && !!FEATURES.tracking) {
+          umami.track('chat_message_sent');
+        }
         setTimeout(() => {
           addMessage("I've received your message! I'll get back to you soon.", 'bot');
         }, 1000);
@@ -722,6 +804,10 @@ window.customElements.define("experience-article", ExperienceArticle);
       btn.addEventListener('click', () => {
         const reply = btn.getAttribute('data-reply');
         addMessage(btn.textContent, 'user');
+
+        if (window.umami && !!FEATURES.tracking) {
+          umami.track('quick_reply_clicked', { reply_type: reply });
+        }
 
         setTimeout(() => {
           let response = "";
