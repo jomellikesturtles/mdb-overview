@@ -1,4 +1,13 @@
-var lazyLoading=false
+var lazyLoading = false
+var tracking_feature = false
+
+function trackEvent(eventName, eventArgs) {
+  if (window.umami && !!tracking_feature) {
+    !!eventArgs ? umami.track(eventName, eventArgs) : umami.track(eventName)
+  } else {
+    console.log("MOCK TRACKING: ", eventName, eventArgs)
+  }
+}
 window.addEventListener("load", () => {
   // Feature Toggle Configuration
   const FEATURES = {
@@ -12,13 +21,14 @@ window.addEventListener("load", () => {
     spotlight: false,
     lazyLoading: false
   };
+  lazyLoading = FEATURES.lazyLoading;
+  tracking_feature = FEATURES.tracking;
 
   const spotlight = document.getElementById('cursor-spotlight');
   if (FEATURES.spotlight) {
     spotlight.classList.add('spotlight-overlay');
   }
 
-  lazyLoading = FEATURES.lazyLoading;
   // Image Lazy Loading Engine
   const initLazyLoading = () => {
     const imageObserver = new IntersectionObserver((entries, observer) => {
@@ -78,16 +88,34 @@ window.addEventListener("load", () => {
   document.addEventListener('click', (e) => {
     if (!window.umami && !!FEATURES.tracking) return;
 
+    // CV Download
     const cvBtn = e.target.closest('.cv-button');
     if (cvBtn) {
-      umami.track('cv_downloaded');
+      trackEvent('cv_downloaded');
     }
 
-    const projectLink = e.target.closest('project-article');
-    if (projectLink && e.target.classList.contains('main-card-link')) {
-      const articleAttr = projectLink.getAttribute('article');
-      const title = articleAttr ? JSON.parse(articleAttr).title : 'Unknown Project';
-      umami.track('project_link_clicked', { project: title });
+    // Project Links
+    const projectLink = e.target;
+    if (projectLink && projectLink.tagName.toUpperCase() == 'PROJECT-ARTICLE') {
+
+      const articleAttr = projectLink.getAttribute('aria-label');
+      const title = articleAttr ? articleAttr : 'Unknown Project';
+      trackEvent('project_link_clicked', { project: title });
+    }
+
+    // Contact Methods (Email, Phone)
+    const contactLink = e.target.closest('.contact-link');
+    if (contactLink) {
+      const href = contactLink.getAttribute('href');
+      const type = href.startsWith('mailto:') ? 'email' : 'phone';
+      trackEvent('contact_link_clicked', { type: type, value: href });
+    }
+
+    // Social Circles (GitHub, LinkedIn)
+    const socialBtn = e.target.closest('.circle-btn');
+    if (socialBtn) {
+      const label = socialBtn.getAttribute('aria-label');
+      trackEvent('social_link_clicked', { platform: label });
     }
   });
 
@@ -102,10 +130,10 @@ window.addEventListener("load", () => {
         if (entry.isIntersecting) {
           if (!sectionTimers.has(sectionId)) {
             const timer = setTimeout(() => {
-              if (window.umami && !!FEATURES.tracking) {
-                console.log(`[Analytics] User lingered on section [${sectionId}] for 5s`);
-                umami.track('section_viewed', { section_id: sectionId });
-              }
+
+              console.log(`[Analytics] User lingered on section [${sectionId}] for 5s`);
+              trackEvent('section_viewed', { section_id: sectionId });
+
               sectionObserver.unobserve(entry.target);
               sectionTimers.delete(sectionId);
             }, 5000);
@@ -759,8 +787,8 @@ window.customElements.define("experience-article", ExperienceArticle);
   if (chatPill && chatModal) {
     chatPill.addEventListener('click', () => {
       const isShowing = chatModal.classList.toggle('show');
-      if (window.umami && !!FEATURES.tracking && isShowing) {
-        umami.track('chat_opened');
+      if (isShowing) {
+        trackEvent('chat_opened');
       }
     });
 
@@ -781,9 +809,7 @@ window.customElements.define("experience-article", ExperienceArticle);
       if (text) {
         addMessage(text, 'user');
         chatInput.value = '';
-        if (window.umami && !!FEATURES.tracking) {
-          umami.track('chat_message_sent');
-        }
+        trackEvent('chat_message_sent');
         setTimeout(() => {
           addMessage("I've received your message! I'll get back to you soon.", 'bot');
         }, 1000);
@@ -805,9 +831,7 @@ window.customElements.define("experience-article", ExperienceArticle);
         const reply = btn.getAttribute('data-reply');
         addMessage(btn.textContent, 'user');
 
-        if (window.umami && !!FEATURES.tracking) {
-          umami.track('quick_reply_clicked', { reply_type: reply });
-        }
+        trackEvent('quick_reply_clicked', { reply_type: reply });
 
         setTimeout(() => {
           let response = "";
