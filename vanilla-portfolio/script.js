@@ -334,6 +334,13 @@ class ProjectArticle extends HTMLElement {
     if (!val) return;
 
     const isGolden = val.isGolden || val.title === 'MDB (Media Data Base)';
+    const status = val.status || 'online';
+    const statusConfig = {
+      'online': { label: 'Online', class: 'online' },
+      'sunset': { label: 'Archived', class: 'sunset' },
+      'private': { label: 'Internal', class: 'private' },
+      'showcase': { label: 'Showcase', class: 'showcase' }
+    }[status] || { label: 'Online', class: 'online' };
 
     this.shadowRoot.innerHTML = `
     <link rel="stylesheet" href="styles.css">
@@ -344,6 +351,10 @@ class ProjectArticle extends HTMLElement {
       <div class="project-content">
         <div class="project-header">
            <h3 class="project-title">${val.title}</h3>
+           <div class="status-badge ${statusConfig.class}">
+             <span class="status-dot"></span>
+             ${statusConfig.label}
+           </div>
            ${isGolden ? '<span class="badge">Featured</span>' : ''}
            ${isGolden && val.deployCmd ? `
              <div class="deploy-badge" id="copy-deploy" title="Click to copy deployment command">
@@ -396,7 +407,7 @@ class ProjectArticle extends HTMLElement {
       </div>
 
       <div class="project-image-wrapper">
-         <img src="${val.imgUrl}" src="${val.imgUrl}" alt="${val.title}" class=" ${lazyLoading ? 'lazy-img' : ''}">
+         <img src="${val.imgUrl}" alt="${val.title}" class="${lazyLoading ? 'lazy-img' : ''}">
          ${isGolden && !this._isArchitectureView ? `
             <div class="mini-player-overlay">
                <div class="play-icon"></div>
@@ -466,6 +477,30 @@ class ProjectArticle extends HTMLElement {
         color: var(--text-primary);
         margin: 0;
       }
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255,255,255,0.05);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-secondary);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+      }
+      .online .status-dot { background-color: #34c759; box-shadow: 0 0 8px #34c759; }
+      .sunset .status-dot { background-color: #ff9500; box-shadow: 0 0 8px #ff9500; }
+      .private .status-dot { background-color: #007aff; box-shadow: 0 0 8px #007aff; }
+      .showcase .status-dot { background-color: #af52de; box-shadow: 0 0 8px #af52de; }
+
       .badge {
         background: var(--accent-color);
         color: #fff;
