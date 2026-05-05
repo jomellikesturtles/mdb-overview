@@ -35,7 +35,7 @@ jobs:
         run: cp -r vanilla-portfolio/assets output/
       - name: Minify HTML (removes comments, whitespace, and inlines minified CSS/JS)
         run: html-minifier-terser --collapse-whitespace --remove-comments --minify-js true --minify-css true -o output/index.html vanilla-portfolio/index.html
-      - name: Minify CSS                                                                                                   │
+      - name: Minify CSS
         run: cleancss -o output/styles.css vanilla-portfolio/styles.css
 
       - name: Minify JS ()
@@ -118,22 +118,22 @@ jobs:
           # Update assets in the subfolder
           rm -rf mdb-overview/assets mdb-overview/index.html mdb-overview/styles.css mdb-overview/script.js mdb-overview/footer.js
           cp -r ../output/* mdb-overview/
-          
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
+
           BRANCH_NAME="sync-overview-$(date +%Y%m%d%H%M%S)"
           git checkout -b $BRANCH_NAME
           git add .
-          
+
           if git diff --staged --quiet; then
             echo "No changes to sync"
             exit 0
           fi
-          
+
           git commit -m "chore: sync assets from mdb-overview"
-          git push origin $BRANCH_NAME
-          
+          git push https://${{ secrets.PAT_GITHUB }}@github.com/jomellikesturtles/mdb-platform.git $BRANCH_NAME
+
           gh auth status
 
           gh pr create \
