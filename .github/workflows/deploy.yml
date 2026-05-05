@@ -134,6 +134,13 @@ jobs:
           git commit -m "chore: sync assets from mdb-overview"
           git push origin $BRANCH_NAME
           
-          gh pr create --title "Sync: Portfolio Assets Update" --body "Automated PR to sync built assets from mdb-overview repo." --base master --head $BRANCH_NAME
+          gh auth status
+
+          gh pr create \
+            --repo jomellikesturtles/mdb-platform \
+            --title "Sync: Portfolio Assets Update" \
+            --body "Automated PR to sync built assets from mdb-overview repo." \
+            --base master \
+            --head $BRANCH_NAME
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
