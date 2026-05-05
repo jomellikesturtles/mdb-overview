@@ -5,6 +5,7 @@
   --text-primary: #f5f5f7;
   --text-secondary: #86868b;
   --accent-color: #ff8229;
+  --primary-color: #007aff;
   --font-stack:
     "SF Pro Display", "SF Pro Icons", "Helvetica Neue", "Helvetica", "Arial",
     sans-serif;
@@ -920,17 +921,21 @@ a:hover {
 }
 
 .button {
-  background-color: var(--text-primary);
-  color: var(--bg-color);
+  background-color: var(--primary-color);
+  color: #fff;
   padding: 12px 24px;
   border-radius: 980px;
-  font-weight: 500;
+  font-weight: 600;
   display: inline-block;
-  transition: transform 0.2s;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
 }
 
 .button:hover {
-  transform: scale(1.02);
+  transform: scale(1.05);
+  background-color: #3395ff;
+  box-shadow: 0 0 15px rgba(0, 122, 255, 0.4);
   text-decoration: none;
 }
 
