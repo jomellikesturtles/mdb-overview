@@ -17,7 +17,9 @@
   <script src="script.js" async defer></script>
   <script src="footer.js" async defer></script>
   <!-- Umami Analytics -->
-   <script defer src="https://cloud.umami.is/script.js" data-website-id="c02191cc-0c16-42a2-81bd-ca90f50846bf"></script>
+
+  <!-- <script defer src="http://localhost:3000/script.js" data-website-id="08e55e14-8ffe-4abf-9edc-0b1aca528be0"></script> -->
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="c02191cc-0c16-42a2-81bd-ca90f50846bf"></script>
 </head>
 
 <body>
@@ -440,7 +442,8 @@
         <p class="hero-subheadline">Specialized in <span id="role-cycle">Angular 17</span>.</p>
 
         <div class="intro-actions">
-          <a href="../Saligumba_Jommel.pdf" download="Saligumba_Jommel" target="_blank" class="button cv-button">DOWNLOAD CV</a>
+          <a href="../saligumba_jommel.pdf" download="Saligumba_Jommel_CV" target="_blank"
+            class="button cv-button">DOWNLOAD CV</a>
           <div class="social-circles">
             <a href="https://github.com/jomellikesturtles/" target="_blank" rel="noopener" class="circle-btn"
               aria-label="GitHub">
@@ -567,7 +570,7 @@
           <experience-article article='{
               "date": "2020 - 2025",
               "title": "Full-Stack Software Engineer @ Manulife IT Delivery Center Asia",
-              "description": "Led an enterprise-wide frontend modernization, successfully migrating legacy Angular 5 systems to v17, resulting in a 40% reduction in technical debt. Architected a reusable universal-form library supporting dynamic rendering across multi-country projects. Optimized performance and reliability by implementing Redis caching and integrating automated security scanning (Snyk/Fortify) into CI/CD pipelines."
+              "description": "Spearheaded the architectural migration of mission-critical fintech applications from Angular 5 to 17, delivering a 40% reduction in technical debt. Architected a reusable Universal Form Library with dynamic builder capabilities, enabling rapid multi-country deployments and significantly reducing time-to-market. Optimized enterprise system latency through advanced Redis caching and automated security integration in CI/CD pipelines."
            }'></experience-article>
 
           <!-- Job 1 -->
@@ -600,6 +603,7 @@
           <project-article id="project-article" aria-label="MDB" data-feature="mdbProject" article='{
               "isGolden": true,
               "status": "showcase",
+              "year": "2019 - Present",
               "techStacks": ["angular", "spring", "docker", "postgres", "rest-api", "microservices"],
               "title": "MDB (Media Data Base)",
               "description": "An event-driven media ecosystem designed for extreme performance. Features a distributed microservices architecture using Kafka for seamless inter-service communication, a high-performance Angular/Electron frontend, and robust Spring Boot backends (API & BFF). Engineered with Hyperlight principles and automated DevOps pipelines.",
@@ -610,6 +614,7 @@
 
           <project-article id="project-article" aria-label="DENR" article='{
               "status": "sunset",
+              "year": "2024",
               "backgroundColor": "#1d1d1f",
               "techStacks": ["react","spring","docker","mysql","aws"],
               "title": "DENR Booking System",
@@ -617,8 +622,10 @@
               "imgUrl":"assets/denr.png",
               "projectUrl": "https://google.com"}'></project-article>
 
-          <project-article id="project-article" aria-label="UTrade" article='{
+          <project-article id="project-article" aria-label="UTrade"
+            article='{
               "status": "online",
+              "year": "2023",
               "backgroundColor": "#1d1d1f",
               "techStacks": ["angular","spring","docker","mysql","aws"],
               "title": "U-Trade Platform",
@@ -628,6 +635,7 @@
 
           <project-article id="project-article" aria-label="XBin" article='{
               "status": "private",
+              "year": "2020",
               "backgroundColor": "#1d1d1f",
               "techStacks": ["angular","spring","mysql"],
               "title": "XBin Timekeeper",
@@ -824,13 +832,24 @@
         <h2 class="section-headline" style="margin-bottom: 40px;">Get in Touch.</h2>
         <div class="contact-actions">
           <div class="contact-methods" style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-            <a href="mailto:jommelsaligumba@gmail.com" class="contact-link" style="font-size: 24px; color: var(--text-primary); display: flex; align-items: center; gap: 10px;">
-              <svg viewBox="0 0 24 24" class="icon" style="width: 24px; height: 24px;"><path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z" /></svg>
+            <a href="mailto:jommelsaligumba@gmail.com" class="contact-link"
+              style="font-size: 24px; color: var(--text-primary); display: flex; align-items: center; gap: 10px;">
+              <svg viewBox="0 0 24 24" class="icon" style="width: 24px; height: 24px;">
+                <path
+                  d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z" />
+              </svg>
               jommelsaligumba@gmail.com
             </a>
-            <a href="tel:+639291419400" class="contact-link" style="font-size: 24px; color: var(--text-primary); display: flex; align-items: center; gap: 10px;">
-              <svg viewBox="0 0 24 24" class="icon" style="width: 24px; height: 24px;"><path d="M6.62,10.79C8.06,13.62 10.38,16.06 13.21,17.5L15.41,15.3C15.69,15.02 16.08,14.94 16.43,15.05C17.55,15.42 18.76,15.62 20,15.62C20.55,15.62 21,16.07 21,16.62V20C21,20.55 20.55,21 20,21C10.61,21 3,10.39 3,1C3,0.45 3.45,0 4,0H7.38C7.93,0 8.38,0.45 8.38,1C8.38,2.24 8.58,3.45 8.95,4.57C9.06,4.92 8.98,5.31 8.7,5.59L6.62,10.79Z" /></svg>
+            <a href="tel:+639291419400" class="contact-link"
+              style="font-size: 24px; color: var(--text-primary); display: flex; align-items: center; gap: 10px;">
+              <svg viewBox="0 0 24 24" class="icon" style="width: 24px; height: 24px;">
+                <path
+                  d="M6.62,10.79C8.06,13.62 10.38,16.06 13.21,17.5L15.41,15.3C15.69,15.02 16.08,14.94 16.43,15.05C17.55,15.42 18.76,15.62 20,15.62C20.55,15.62 21,16.07 21,16.62V20C21,20.55 20.55,21 20,21C10.61,21 3,10.39 3,1C3,0.45 3.45,0 4,0H7.38C7.93,0 8.38,0.45 8.38,1C8.38,2.24 8.58,3.45 8.95,4.57C9.06,4.92 8.98,5.31 8.7,5.59L6.62,10.79Z" />
+              </svg>
               +63 929 141 9400
+            </a>
+            <a href="../saligumba_jommel.pdf" download="Saligumba_Jommel_CV" target="_blank" class="button cv-button" style="margin-top: 10px; align-self: flex-start;">
+              DOWNLOAD CV
             </a>
           </div>
           <div class="social-circles" style="justify-content: left;">
@@ -885,7 +904,7 @@
   </footer>
 
   <!-- Chat UI -->
-  <div id="chat-pill" class="chat-pill-button" data-feature="chat" aria-label="Open Chat">
+  <div id="chat-pill" class="chat-pill-button" data-feature="chat" aria-label="Open Chat" style="display: none;">
     <svg class="icon">
       <use xlink:href="#icon-chat"></use>
     </svg>

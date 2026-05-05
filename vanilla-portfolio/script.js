@@ -419,16 +419,45 @@ class ProjectArticle extends HTMLElement {
     <style>
       :host {
         display: block;
+        margin-left: 20px;
       }
       .project-card {
         position: relative;
         background-color: var(--bg-secondary);
         border-radius: 30px;
-        overflow: hidden;
+        overflow: visible;
         display: flex;
         flex-direction: column;
         transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         border: 1px solid rgba(255,255,255,0.05);
+      }
+      .timeline-marker {
+        position: absolute;
+        left: -40px;
+        top: 40px;
+        bottom: 40px;
+        width: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 20;
+      }
+      .timeline-line {
+        flex: 1;
+        width: 1px;
+        background: linear-gradient(to bottom, transparent, var(--accent-color), transparent);
+        opacity: 0.3;
+      }
+      .timeline-year {
+        writing-mode: vertical-lr;
+        transform: rotate(180deg);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--accent-color);
+        padding: 15px 0;
+        white-space: nowrap;
       }
       .main-card-link {
         position: absolute;
@@ -437,6 +466,7 @@ class ProjectArticle extends HTMLElement {
         width: 100%;
         height: 100%;
         z-index: 5;
+        border-radius: 30px;
       }
       .project-header, .project-actions, .tech-stack, .deploy-badge {
         position: relative;
@@ -667,6 +697,15 @@ class ProjectArticle extends HTMLElement {
         flex: 1;
         position: relative;
         overflow: hidden;
+        border-top-right-radius: 30px;
+        border-bottom-right-radius: 30px;
+      }
+      @media (max-width: 799px) {
+        .project-image-wrapper {
+          border-radius: 0;
+          border-bottom-left-radius: 30px;
+          border-bottom-right-radius: 30px;
+        }
       }
       .project-image-wrapper img {
         width: 100%;
