@@ -1,0 +1,25 @@
+{
+  "name": "mdb-overview",
+  "version": "1.0.0",
+  "description": "- technologies - overview - features - user data list",
+  "main": "generate-sprite.js",
+  "scripts": {
+    "start": "npx serve vanilla-portfolio -p 3000",
+    "test": "npx playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jomellikesturtles/mdb-overview.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jomellikesturtles/mdb-overview/issues"
+  },
+  "homepage": "https://github.com/jomellikesturtles/mdb-overview#readme",
+  "dependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}
