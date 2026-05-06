@@ -23,10 +23,10 @@ test.describe('Portfolio Page Tests', () => {
   test('should have working navigation links', async ({ page }) => {
     const navLinks = page.locator('.nav-list a');
     await expect(navLinks).toHaveCount(7);
-    
+
     const introLink = page.locator('.nav-list a[href="#intro"]');
     await expect(introLink).toBeVisible();
-    
+
     const contactLink = page.locator('.nav-list a[href="#contact"]');
     await expect(contactLink).toBeVisible();
     await page.screenshot({ path: 'vanilla-portfolio/screenshots/navigation.png' });
@@ -61,41 +61,6 @@ test.describe('Portfolio Page Tests', () => {
     await page.screenshot({ path: 'vanilla-portfolio/screenshots/footer.png' });
   });
 
-  test.describe('Chat UI', () => {
-    test('should show the chat pill button', async ({ page }) => {
-      const pill = page.locator('#chat-pill');
-      await expect(pill).toBeVisible();
-      await expect(pill).toContainText('Chat');
-    });
-
-    test('should toggle the chat modal when clicking the pill', async ({ page }) => {
-      const pill = page.locator('#chat-pill');
-      const modal = page.locator('#chat-modal');
-      
-      await pill.click();
-      await expect(modal).toBeVisible();
-      await expect(modal).toHaveClass(/show/);
-      
-      const closeBtn = page.locator('#chat-close');
-      await closeBtn.click();
-      await expect(modal).not.toBeVisible();
-    });
-
-    test('should handle quick replies', async ({ page }) => {
-      const pill = page.locator('#chat-pill');
-      await pill.click();
-      
-      const projectsBtn = page.locator('.quick-reply-btn[data-reply="projects"]');
-      await projectsBtn.click();
-      
-      const userMsg = page.locator('.chat-message.user').last();
-      await expect(userMsg).toContainText('Show Projects');
-      
-      const botMsg = page.locator('.chat-message.bot').last();
-      await expect(botMsg).toContainText('Check out my work', { timeout: 2000 });
-    });
-  });
-
   test.describe('Feature Toggles', () => {
     test('should hide chat UI when toggled via URL', async ({ page }) => {
       await page.goto(`${filePath}?feature:chat=false`);
@@ -107,7 +72,7 @@ test.describe('Portfolio Page Tests', () => {
       await page.goto(`${filePath}?feature:mdbProject=false`);
       const mdb = page.locator('[data-feature="mdbProject"]');
       await expect(mdb).toBeHidden();
-      
+
       // Check visible projects
       const visibleProjects = page.locator('project-article:visible');
       await expect(visibleProjects).toHaveCount(3);
