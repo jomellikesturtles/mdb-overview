@@ -50,3 +50,6 @@ These guidelines are derived from analyzing the `@hyperlight-websites` project a
 
 - Hyperlight Websites Architecture Guidelines: 1. Static Generation (build-time HTML creation). 2. Aggressive Inlining: CSS, JavaScript, and SVG sprites are inlined directly into index.html to minimize HTTP requests. 3. Zero Frameworks: Use vanilla HTML, CSS, and minimal JS. 4. Server-Side Compression: Nginx configured for maximum Gzip (level 9) and Brotli (level 11) compression. 5. CDN for heavy assets: Images served via external optimized CDNs.
 - Hyperlight Websites Principles: 1. Aggressive Inlining (CSS/JS/SVG in HTML) to minimize requests. 2. Zero Frameworks (Vanilla JS/CSS). 3. Static Site Generation (Build-time HTML). 4. Max Server Compression (Brotli L11/Gzip L9). 5. Offload media to optimized CDNs.
+
+## Pull Request Standards
+- **Template Requirement:** Always follow the format specified in `.github/pull_request_template.md` when creating Pull Requests. This includes sections for Description, Type of Change, Testing, and a Checklist.

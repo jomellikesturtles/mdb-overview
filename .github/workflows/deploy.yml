@@ -113,34 +113,35 @@ jobs:
           path: mdb-platform
 
       - name: Create Pull Request on mdb-platform
-        run: |
-          cd mdb-platform
-          # Update assets in the subfolder
-          rm -rf mdb-overview/assets mdb-overview/index.html mdb-overview/styles.css mdb-overview/script.js mdb-overview/footer.js
-          cp -r ../output/* mdb-overview/
+        run: echo "Simulating Create Pull Request on mdb-platform"
+        # run: |
+        #   cd mdb-platform
+        #   # Update assets in the subfolder
+        #   rm -rf mdb-overview/assets mdb-overview/index.html mdb-overview/styles.css mdb-overview/script.js mdb-overview/footer.js
+        #   cp -r ../output/* mdb-overview/
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+        #   git config user.name "github-actions[bot]"
+        #   git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          BRANCH_NAME="sync-overview-$(date +%Y%m%d%H%M%S)"
-          git checkout -b $BRANCH_NAME
-          git add .
+        #   BRANCH_NAME="sync-overview-$(date +%Y%m%d%H%M%S)"
+        #   git checkout -b $BRANCH_NAME
+        #   git add .
 
-          if git diff --staged --quiet; then
-            echo "No changes to sync"
-            exit 0
-          fi
+        #   if git diff --staged --quiet; then
+        #     echo "No changes to sync"
+        #     exit 0
+        #   fi
 
-          git commit -m "chore: sync assets from mdb-overview"
-          git push https://${{ secrets.PAT_GITHUB }}@github.com/jomellikesturtles/mdb-platform.git $BRANCH_NAME
+        #   git commit -m "chore: sync assets from mdb-overview"
+        #   git push https://${{ secrets.PAT_GITHUB }}@github.com/jomellikesturtles/mdb-platform.git $BRANCH_NAME
 
-          gh auth status
+        #   gh auth status
 
-          gh pr create \
-            --repo jomellikesturtles/mdb-platform \
-            --title "Sync: Portfolio Assets Update" \
-            --body "Automated PR to sync built assets from mdb-overview repo." \
-            --base master \
-            --head $BRANCH_NAME
+        #   gh pr create \
+        #     --repo jomellikesturtles/mdb-platform \
+        #     --title "Sync: Portfolio Assets Update" \
+        #     --body "Automated PR to sync built assets from mdb-overview repo." \
+        #     --base master \
+        #     --head $BRANCH_NAME
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
