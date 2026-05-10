@@ -253,6 +253,57 @@ window.addEventListener("load", () => {
       }, 500);
     }, 3000);
   }
+
+  // Dynamic Download Link Logic
+  const updateDownloadLinks = () => {
+    // Respect feature toggle
+    if (!FEATURES.mdbProject) return;
+
+    const userAgent = window.navigator.userAgent;
+    const isMac = /Macintosh|Mac OS X/i.test(userAgent);
+    const isWin = /Windows/i.test(userAgent);
+    const downloadUrl = "https://github.com/jomellikesturtles/mdb-electron/releases/download/v1.0.0-alpha/mdb-darwin-arm64.zip";
+
+    // 1. Hero Section Link
+    const mdbDownloadLink = document.getElementById('mdb-download-link');
+    if (mdbDownloadLink) {
+      const btnText = mdbDownloadLink.querySelector('.btn-text');
+      if (isMac) {
+        mdbDownloadLink.href = downloadUrl;
+        if (btnText) btnText.textContent = "Download MDB (macOS)";
+        mdbDownloadLink.style.display = 'inline-flex';
+      } else if (isWin) {
+        mdbDownloadLink.href = downloadUrl;
+        if (btnText) btnText.textContent = "Download MDB (Windows)";
+        mdbDownloadLink.style.display = 'inline-flex';
+      } else {
+        // HIDE on mobile/other devices in Hero
+        mdbDownloadLink.style.display = 'none';
+      }
+    }
+
+    // 2. Project Card Link
+    document.querySelectorAll('project-article').forEach(article => {
+      const cardLink = article.shadowRoot.getElementById('card-download-link');
+      if (cardLink) {
+        const btnText = cardLink.querySelector('.btn-text');
+        if (isMac || isWin) {
+           cardLink.href = downloadUrl;
+           if (btnText) btnText.textContent = isMac ? "Download MDB (macOS)" : "Download MDB (Windows)";
+           cardLink.style.display = 'inline-flex';
+           cardLink.classList.remove('info-only');
+        } else {
+           // SHOW informational badge in card for mobile/others
+           if (btnText) btnText.textContent = "Available on Windows and macOS";
+           cardLink.style.display = 'inline-flex';
+           cardLink.classList.add('info-only');
+           cardLink.removeAttribute('href');
+        }
+      }
+    });
+  };
+
+  updateDownloadLinks();
 });
 
 class StatsSpan extends HTMLElement {
@@ -351,6 +402,7 @@ class ProjectArticle extends HTMLElement {
       <div class="project-content">
         <div class="project-header">
            <h3 class="project-title">${val.title}</h3>
+           ${val.year ? `<span class="project-year">${val.year}</span>` : ''}
            <div class="status-badge ${statusConfig.class}">
              <span class="status-dot"></span>
              ${statusConfig.label}
@@ -402,6 +454,10 @@ class ProjectArticle extends HTMLElement {
                 View Source
               </a>
             ` : ''}
+            <a id="card-download-link" href="#" class="download-card-btn" style="display:none">
+              <svg class="btn-icon" viewBox="0 0 24 24"><path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/></svg>
+              <span class="btn-text">Download MDB</span>
+            </a>
           </div>
         ` : ''}
       </div>
@@ -506,6 +562,15 @@ class ProjectArticle extends HTMLElement {
         font-size: 36px;
         color: var(--text-primary);
         margin: 0;
+      }
+      .project-year {
+        font-size: 14px;
+        color: var(--text-secondary);
+        font-weight: 500;
+        background: rgba(255,255,255,0.03);
+        padding: 4px 12px;
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.05);
       }
       .status-badge {
         display: inline-flex;
@@ -688,7 +753,47 @@ class ProjectArticle extends HTMLElement {
         background: var(--accent-color);
         color: #fff;
       }
+      .download-card-btn {
+        background: var(--accent-color);
+        color: #fff;
+        border: 1px solid var(--accent-color);
+        padding: 10px 24px;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+      }
+      .download-card-btn:hover {
+        background: #ff9d5c;
+        border-color: #ff9d5c;
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(255, 130, 41, 0.4);
+      }
+      .download-card-btn.info-only {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: var(--text-secondary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: default;
+        pointer-events: none;
+      }
+      .download-card-btn.info-only:hover {
+        transform: none;
+        box-shadow: none;
+      }
+      .download-card-btn.info-only .btn-icon {
+        display: none;
+      }
       .source-icon {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+      }
+      .btn-icon {
         width: 18px;
         height: 18px;
         fill: currentColor;
