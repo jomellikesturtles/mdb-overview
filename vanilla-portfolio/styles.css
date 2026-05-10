@@ -181,6 +181,30 @@ a:hover {
   letter-spacing: 0.02em;
 }
 
+.mdb-button {
+  background-color: var(--accent-color) !important;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+.mdb-button:hover {
+  background-color: #ff9d5c;
+  box-shadow: 0 0 15px rgba(255, 130, 41, 0.4);
+}
+
+.mdb-button.info-only {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: default;
+  pointer-events: none;
+}
+
+.mdb-button.info-only:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .social-circles {
   display: flex;
   gap: 15px;
@@ -926,10 +950,19 @@ a:hover {
   padding: 12px 24px;
   border-radius: 980px;
   font-weight: 600;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   transition: all 0.2s ease;
   border: none;
   cursor: pointer;
+}
+
+.btn-icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
 }
 
 .button:hover {

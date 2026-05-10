@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jommelsaligumba.github.io/vanilla-portfolio/sitemap.xml
