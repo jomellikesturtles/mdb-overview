@@ -112,36 +112,25 @@ jobs:
           token: ${{ secrets.PAT_GITHUB }}
           path: mdb-platform
 
+      - name: Update assets in mdb-platform
+        run: |
+          mkdir -p mdb-platform/mdb-overview
+          # Clean up old assets to ensure a clean sync
+          rm -rf mdb-platform/mdb-overview/assets
+          # Copy everything from output to the target subfolder
+          cp -r output/* mdb-platform/mdb-overview/
+
       - name: Create Pull Request on mdb-platform
-        run: echo "Simulating Create Pull Request on mdb-platform"
-        # run: |
-        #   cd mdb-platform
-        #   # Update assets in the subfolder
-        #   rm -rf mdb-overview/assets mdb-overview/index.html mdb-overview/styles.css mdb-overview/script.js mdb-overview/footer.js
-        #   cp -r ../output/* mdb-overview/
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.PAT_GITHUB }}
+          path: mdb-platform
+          commit-message: "chore: sync assets from mdb-overview"
+          branch: sync-portfolio-assets
+          delete-branch: true
+          title: "Sync: Portfolio Assets Update"
+          body: |
+            Automated PR to sync built assets from mdb-overview repo.
 
-        #   git config user.name "github-actions[bot]"
-        #   git config user.email "github-actions[bot]@users.noreply.github.com"
-
-        #   BRANCH_NAME="sync-overview-$(date +%Y%m%d%H%M%S)"
-        #   git checkout -b $BRANCH_NAME
-        #   git add .
-
-        #   if git diff --staged --quiet; then
-        #     echo "No changes to sync"
-        #     exit 0
-        #   fi
-
-        #   git commit -m "chore: sync assets from mdb-overview"
-        #   git push https://${{ secrets.PAT_GITHUB }}@github.com/jomellikesturtles/mdb-platform.git $BRANCH_NAME
-
-        #   gh auth status
-
-        #   gh pr create \
-        #     --repo jomellikesturtles/mdb-platform \
-        #     --title "Sync: Portfolio Assets Update" \
-        #     --body "Automated PR to sync built assets from mdb-overview repo." \
-        #     --base master \
-        #     --head $BRANCH_NAME
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
+            This PR updates the minified assets in `mdb-overview/` subfolder.
+          base: master
