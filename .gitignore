@@ -50,3 +50,6 @@ hyperlight-websites
 .playwright-browsers
 .firebase
 vanilla-apple-landing
+
+.gemini/
+gha-creds-*.json
