@@ -12,7 +12,7 @@ window.addEventListener("load", () => {
   // Feature Toggle Configuration
   const FEATURES = {
     mdbProject: false,
-    chat: false,
+    chat: true,
     lighthouseBadge: false,
     blueprint: false,
     workflow: false,
@@ -975,23 +975,51 @@ window.customElements.define("experience-article", ExperienceArticle);
       chatModal.classList.remove('show');
     });
 
-    const addMessage = (text, sender) => {
+    const addMessage = (text, sender, isLoading = false) => {
       const msg = document.createElement('div');
       msg.classList.add('chat-message', sender);
-      msg.textContent = text;
+      if (isLoading) {
+        msg.classList.add('loading');
+        msg.innerHTML = `<div class="loading-dots"><span></span><span></span><span></span></div>`;
+      } else {
+        // Regex to detect URLs
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        msg.innerHTML = text.replace(urlRegex, (url) => `<a href="${url}" target="_blank" rel="noopener">${url}</a>`);
+      }
       chatMessages.appendChild(msg);
       chatMessages.scrollTop = chatMessages.scrollHeight;
+      return msg;
     };
 
-    const handleSend = () => {
+    const handleSend = async () => {
       const text = chatInput.value.trim();
       if (text) {
         addMessage(text, 'user');
         chatInput.value = '';
         trackEvent('chat_message_sent');
-        setTimeout(() => {
-          addMessage("I've received your message! I'll get back to you soon.", 'bot');
-        }, 1000);
+
+        const loadingMsg = addMessage('', 'bot', true);
+
+        try {
+          const response = await fetch(`http://127.0.0.1:7003/chat/owner`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: text })
+          });
+          const data = await response.json();
+          chatMessages.removeChild(loadingMsg);
+          if (data && data.final_answer) {
+            addMessage(data.final_answer, 'bot');
+          } else {
+            addMessage("I've received your message! I'll get back to you soon.", 'bot');
+          }
+        } catch (error) {
+          console.error("Chat Error:", error);
+          chatMessages.removeChild(loadingMsg);
+          addMessage("Oops! Something went wrong. Please try again later.", 'bot');
+        }
       }
     };
 
@@ -1004,6 +1032,21 @@ window.customElements.define("experience-article", ExperienceArticle);
         if (e.key === 'Enter') handleSend();
       });
     }
+
+    fetch('http://localhost:7003/health')
+      .then(response => {
+        // Check if the request was successful
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json(); // Parse the response as JSON
+      })
+      .then(data => {
+        console.log(data); // Work with your data here
+      })
+      .catch(error => {
+        console.error('Fetch error:', error);
+      });
 
     quickReplies.forEach(btn => {
       btn.addEventListener('click', () => {
