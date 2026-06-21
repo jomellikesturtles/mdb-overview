@@ -8,6 +8,16 @@ function trackEvent(eventName, eventArgs) {
     console.log("MOCK TRACKING: ", eventName, eventArgs)
   }
 }
+
+
+function simpleMarkdownParser(text) {
+    return text
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')     // Headers
+        .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>') // Bold text
+        .replace(/\*(.*)\*/gim, '<em>$1</em>');     // Italic text
+}
+
+
 window.addEventListener("load", () => {
   // Feature Toggle Configuration
   const FEATURES = {
@@ -984,7 +994,10 @@ window.customElements.define("experience-article", ExperienceArticle);
       } else {
         // Regex to detect URLs
         const urlRegex = /(https?:\/\/[^\s]+)/g;
+        text = simpleMarkdownParser(text);
         msg.innerHTML = text.replace(urlRegex, (url) => `<a href="${url}" target="_blank" rel="noopener">${url}</a>`);
+
+
       }
       chatMessages.appendChild(msg);
       chatMessages.scrollTop = chatMessages.scrollHeight;

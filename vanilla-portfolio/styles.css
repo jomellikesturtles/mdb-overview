@@ -1128,7 +1128,7 @@ input {
 }
 
 .chat-pill-button:hover {
-  transform: scale(1.05) translateY(-2px);
+  /* transform: scale(1.05) translateY(-2px); */
   background: #fff;
 }
 
@@ -1414,7 +1414,7 @@ input {
 
 .chat-pill-button:hover {
   /* Include translateX(-50%) to maintain center */
-  transform: translateX(-50%) scale(1.05) translateY(-2px);
+  /* transform: translateX(-50%) scale(1.05) translateY(-2px); */
   background: #fff;
 }
 
