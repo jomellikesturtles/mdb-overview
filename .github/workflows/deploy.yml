@@ -34,7 +34,7 @@ jobs:
       - name: Copy assets (images, etc)
         run: cp -r vanilla-portfolio/assets output/
       - name: Minify HTML (removes comments, whitespace, and inlines minified CSS/JS)
-        run: html-minifier-terser --collapse-whitespace --remove-comments --minify-js true --minify-css true -o output/index.html vanilla-portfolio/index.html
+        run: html-minifier-terser --input-dir ./vanilla-portfolio --output-dir ./output --file-ext html --collapse-whitespace --remove-comments --remove-redundant-attributes --use-short-doctype --minify-js true --minify-css true
       - name: Minify CSS
         run: cleancss -o output/styles.css vanilla-portfolio/styles.css
 

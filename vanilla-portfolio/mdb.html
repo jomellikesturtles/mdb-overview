@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MDB (Media Data Base) - High-performance media ecosystem. Features a distributed microservices architecture orchestrated with Spring Boot and REST APIs.">
+  <title>MDB (Media Data Base) | Project Details</title>
+
+  <link rel="icon" type="image/x-icon" href="./assets/plex.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/plex-icon.png">
+
+  <!-- Umami Analytics -->
+  <!-- <script defer src="https://cloud.umami.is/script.js" data-website-id="c02191cc-0c16-42a2-81bd-ca90f50846bf"></script> -->
+
+  <style>
+    :root {
+      --bg-color: #000000;
+      --bg-secondary: #1c1c1e;
+      --bg-tertiary: #2c2c2e;
+      --text-primary: #f5f5f7;
+      --text-secondary: #86868b;
+      --accent-color: #ff8229;
+      --primary-color: #007aff;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --font-stack: "SF Pro Display", "SF Pro Icons", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+      --max-width: 1000px;
+      --mouse-x: 0px;
+      --mouse-y: 0px;
+
+      /* 8pt Grid Spacing Tokens */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-xxl: 48px;
+
+      /* Fluid Typography Scales */
+      --font-size-xs: clamp(0.7rem, 0.65rem + 0.2vw, 0.75rem);
+      --font-size-sm: clamp(0.8rem, 0.75rem + 0.2vw, 0.85rem);
+      --font-size-base: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
+      --font-size-lg: clamp(1.1rem, 1rem + 0.3vw, 1.25rem);
+      --font-size-xl: clamp(1.4rem, 1.2rem + 0.5vw, 1.75rem);
+
+      /* WCAG AA High-Contrast Link Color on Dark Card Background */
+      --link-color: #5ac8fa;
+      --link-color-hover: #0a84ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      font-family: var(--font-stack);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    /* Spotlight Effect */
+    .spotlight-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9999;
+      pointer-events: none;
+      background: radial-gradient(
+        600px circle at var(--mouse-x) var(--mouse-y),
+        rgba(41, 151, 255, 0.06),
+        transparent 80%
+      );
+    }
+
+    /* Navigation */
+    .global-nav {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      height: 48px;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: saturate(180%) blur(20px);
+      z-index: 100;
+      font-size: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav-content {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .nav-logo {
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: opacity 0.3s ease;
+    }
+
+    .nav-logo:hover {
+      opacity: 0.8;
+      text-decoration: none;
+    }
+
+    .nav-back-link {
+      color: var(--primary-color);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      transition: opacity 0.3s ease;
+    }
+
+    .nav-back-link:hover {
+      opacity: 0.8;
+      text-decoration: none;
+    }
+
+    /* Layout Wrapper */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 80px 20px;
+    }
+
+    /* Hero Section */
+    .hero {
+      margin-bottom: 60px;
+      position: relative;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .year-badge {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      background-color: rgba(41, 151, 255, 0.1);
+      color: var(--primary-color);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      box-shadow: 0 0 8px var(--primary-color);
+    }
+
+    .title-gradient {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #ffffff 0%, #a1a1a6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .lead-text {
+      font-size: 20px;
+      color: var(--text-secondary);
+      max-width: 800px;
+      margin-bottom: 30px;
+      line-height: 1.4;
+    }
+
+    /* Tech Stack Tags */
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+
+    .tech-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .tech-tag:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .tech-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Action Buttons */
+    .actions-bar {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 24px;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: #ffffff;
+      border: 1px solid var(--accent-color);
+    }
+
+    .btn-primary:hover {
+      background-color: #ff9d5c;
+      border-color: #ff9d5c;
+      text-decoration: none;
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 130, 41, 0.4);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--bg-tertiary);
+      text-decoration: none;
+      transform: scale(1.02);
+    }
+
+    .btn-icon-svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    /* Card Details Sections */
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 40px;
+      margin-bottom: 60px;
+    }
+
+    @media (min-width: 800px) {
+      .details-grid {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+
+    .card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 30px;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+    }
+
+    .paragraph {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .spec-list {
+      list-style: none;
+    }
+
+    .spec-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 14px;
+    }
+
+    .spec-item:last-child {
+      border-bottom: none;
+    }
+
+    .spec-label {
+      color: var(--text-secondary);
+    }
+
+    .spec-value {
+      font-weight: 500;
+      text-align: right;
+    }
+
+    /* Interactive Architecture Section */
+    .arch-card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 30px;
+      margin-bottom: 60px;
+    }
+
+    .diagram-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px 20px;
+      margin: 30px 0;
+      position: relative;
+    }
+
+    @media (min-width: 480px) {
+      .diagram-container {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .diagram-node {
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 15px 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: default;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .diagram-node:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: var(--primary-color);
+      box-shadow: 0 0 15px rgba(0, 122, 255, 0.15);
+    }
+
+    .admin-node {
+      border-color: rgba(175, 82, 222, 0.3);
+    }
+
+    .admin-node:hover {
+      border-color: #af52de;
+      box-shadow: 0 0 15px rgba(175, 82, 222, 0.15);
+    }
+
+    .cache-node {
+      border-color: rgba(52, 199, 89, 0.3);
+    }
+
+    .cache-node:hover {
+      border-color: #34c759;
+      box-shadow: 0 0 15px rgba(52, 199, 89, 0.15);
+    }
+
+    .event-node {
+      border-color: rgba(255, 149, 0, 0.3);
+    }
+
+    .event-node:hover {
+      border-color: #ff9500;
+      box-shadow: 0 0 15px rgba(255, 149, 0, 0.15);
+    }
+
+    .db-node {
+      border-color: rgba(0, 122, 255, 0.3);
+    }
+
+    .db-node:hover {
+      border-color: #007aff;
+      box-shadow: 0 0 15px rgba(0, 122, 255, 0.15);
+    }
+
+    .full-width-node {
+      grid-column: span 1;
+    }
+
+    @media (min-width: 480px) {
+      .full-width-node {
+        grid-column: span 2;
+      }
+    }
+
+    .node-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .node-subtitle {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .diagram-connector {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 5px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 11px;
+    }
+
+    .connector-line {
+      width: 2px;
+      height: 20px;
+      background-color: var(--border-color);
+      position: relative;
+    }
+
+    .connector-line::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-right: 2px solid var(--border-color);
+      border-bottom: 2px solid var(--border-color);
+      transform: rotate(45deg);
+      bottom: -1px;
+      right: calc(50% - 3px);
+    }
+
+    /* Shell Setup Section */
+    .shell-container {
+      background-color: #000;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      font-family: monospace;
+      position: relative;
+      margin-bottom: 30px;
+      overflow-x: auto;
+    }
+
+    .shell-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .shell-body {
+      font-size: 13px;
+      color: #30d158;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .shell-btn {
+      background: none;
+      border: none;
+      color: var(--primary-color);
+      cursor: pointer;
+      font-family: var(--font-stack);
+      font-size: 12px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .shell-btn:hover {
+      color: #30d158;
+    }
+
+    .copy-success {
+      position: absolute;
+      top: 20px;
+      right: 80px;
+      color: #30d158;
+      font-size: 12px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Footer Stats block */
+    .divider {
+      height: 1px;
+      background-color: var(--border-color);
+      margin: 80px 0 40px 0;
+    }
+
+    .footer-credits {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 12px;
+      padding-bottom: 40px;
+    }
+
+    /* Screen Showcase Grid */
+    .screens-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      margin-top: 25px;
+    }
+
+    @media (min-width: 768px) {
+      .screens-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .screen-item {
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .screen-item:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    }
+
+    .screen-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .screen-caption {
+      padding: 15px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    /* CI/CD Pipeline styles */
+    .pipeline-flow {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+      margin: 30px 0;
+    }
+
+    @media (min-width: 768px) {
+      .pipeline-flow {
+        grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+        align-items: center;
+      }
+    }
+
+    .pipeline-step {
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 15px 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .pipeline-step:hover {
+      background-color: rgba(255, 255, 255, 0.04);
+      border-color: var(--accent-color);
+    }
+
+    .step-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-color);
+      letter-spacing: 0.1em;
+      margin-bottom: 5px;
+    }
+
+    .step-name {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .step-detail {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .pipeline-arrow {
+      text-align: center;
+      font-size: 20px;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 767px) {
+      .pipeline-arrow {
+        transform: rotate(90deg);
+        margin: 5px 0;
+      }
+    }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin: 30px 0;
+    }
+
+    @media (min-width: 768px) {
+      .metrics-grid {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+      }
+    }
+
+    .metric-card {
+      background-color: rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+      border-color: var(--primary-color);
+    }
+
+    .metric-val {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+    }
+
+    .metric-lbl {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* AIOps Chatbot styles */
+    .chat-container {
+      background-color: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 30px 0;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .chat-header {
+      background-color: rgba(255, 255, 255, 0.03);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .chat-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .status-dot.online {
+      width: 8px;
+      height: 8px;
+      background-color: #30d158;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #30d158;
+    }
+
+    .chat-badge {
+      font-size: 11px;
+      background-color: rgba(48, 209, 88, 0.15);
+      color: #30d158;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    .chat-body {
+      height: 250px;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .chat-message {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .chat-message.bot {
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      align-self: flex-start;
+      color: var(--text-primary);
+      text-align: left;
+    }
+
+    .chat-message.bot.typing {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .chat-message.user {
+      background-color: var(--primary-color);
+      color: white;
+      align-self: flex-end;
+      text-align: left;
+    }
+
+    .chat-suggestions {
+      padding: 15px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-top: 1px solid var(--border-color);
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .suggest-chip {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .suggest-chip:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      background-color: rgba(0, 122, 255, 0.05);
+    }
+
+    .aiops-node {
+      border-color: rgba(255, 45, 85, 0.3);
+    }
+
+    .aiops-node:hover {
+      border-color: #ff2d55;
+      box-shadow: 0 0 15px rgba(255, 45, 85, 0.15);
+    }
+
+    .repo-link {
+      color: var(--link-color);
+      text-decoration: underline;
+      text-decoration-color: rgba(90, 200, 250, 0.3);
+      text-underline-offset: 3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .repo-link::after {
+      content: ' ↗';
+      font-size: 10px;
+      opacity: 0.6;
+      display: inline-block;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .repo-link:hover {
+      color: var(--link-color-hover);
+      text-decoration-color: var(--link-color-hover);
+    }
+
+    .repo-link:hover::after {
+      transform: translate(1px, -1px);
+      opacity: 1;
+    }
+
+    .visibility-badge {
+      font-size: 8px;
+      padding: 1px 4px;
+      border-radius: 6px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .visibility-badge.public {
+      background-color: rgba(48, 209, 88, 0.12);
+      color: #30d158;
+      border: 1px solid rgba(48, 209, 88, 0.2);
+    }
+
+    .visibility-badge.private {
+      background-color: rgba(255, 149, 0, 0.12);
+      color: #ff9500;
+      border: 1px solid rgba(255, 149, 0, 0.2);
+    }
+
+    .auth-node {
+      border-color: rgba(94, 92, 230, 0.3);
+    }
+
+    .auth-node:hover {
+      border-color: #5e5ce6;
+      box-shadow: 0 0 15px rgba(94, 92, 230, 0.15);
+    }
+
+    /* Runbook Accordion Styles */
+    .runbook-details {
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin: var(--space-md) 0 var(--space-lg) 0;
+      overflow: hidden;
+      transition: background-color 0.3s ease;
+    }
+
+    .runbook-details[open] {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .runbook-summary {
+      padding: var(--space-md) var(--space-lg);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary-color);
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      list-style: none;
+    }
+
+    .runbook-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .runbook-summary::after {
+      content: '＋';
+      font-size: 14px;
+      color: var(--text-secondary);
+      transition: transform 0.3s ease;
+    }
+
+    .runbook-details[open] .runbook-summary::after {
+      content: '－';
+    }
+
+    .runbook-content {
+      padding: var(--space-lg);
+      font-size: 12px;
+      line-height: 1.6;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      text-align: left;
+    }
+
+    .runbook-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 15px;
+      margin-bottom: 5px;
+    }
+
+    .runbook-list {
+      margin-left: 20px;
+      margin-bottom: 10px;
+      list-style-type: decimal;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="spotlight-overlay"></div>
+
+  <!-- SVG Sprite definitions inlined directly in body for immediate render -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="angular" viewBox="0 0 250 250">
+      <g>
+        <polygon fill="#DD0031" points="125,30 125,30 125,30 31.9,63.2 46.1,186.3 125,230 125,230 125,230 203.9,186.3 218.1,63.2" />
+        <polygon fill="#C3002F" points="125,30 125,52.2 125,52.1 125,153.4 125,153.4 125,230 125,230 203.9,186.3 218.1,63.2 125,30" />
+        <path fill="#FFFFFF" d="M125,52.1L66.8,182.6h0h21.7h0l11.7-29.2h49.4l11.7,29.2h0h21.7h0L125,52.1L125,52.1L125,52.1L125,52.1L125,52.1z M142,135.4H108l17-40.9L142,135.4z" />
+      </g>
+    </symbol>
+    <symbol id="spring" viewBox="0 0 245.1 63">
+      <g transform="matrix(1,0,0,-1,0,63)">
+        <path fill="#5fb832" d="M60.5,14.4C54.9,17.4,50.6,23.9,50.6,32.6c0,11.7,9.1,21.2,21.3,21.2c4.3,0,8.2-1.3,11.3-3c22.2-14.8,45.2-22.1,66-22.1c22.6,0,35.6,9.6,35.6,24.8V54.3c0,17.8-24.3,23.9-51.2,32.1C100,95.9,62.2,109.8,62.2,153.6v0.9c0,43.4,36,69.9,81.6,69.9c24.3,0,49.9-7,72-18.7c7.4-3.9,12.6-10.9,12.6-20c0-12.2-9.5-21.3-21.7-21.3c-4.4,0-7,0.9-10.4,2.6c-18.7,9.6-37.8,15.6-53.8,15.6c-20.4,0-32.1-9.6-32.1-22.6v-0.8c0-16.9,24.7-23.9,51.6-32.6C195.4,115.8,233.2,100.6,233.2,59.4v-0.9C233.2,10.3,195.9-13.6,148.1-13.6C119.1-13.6,87.4-4.5,60.5,14.4" transform="scale(0.1)" />
+      </g>
+    </symbol>
+    <symbol id="docker" viewBox="0 0 32 32">
+      <path fill="#17b5eb" d="M22.2,12.8c0.2-1.6-1-2.9-1.8-3.5c-0.9,1-1,3.6,0.4,4.7c-0.8,0.7-2.4,1.3-4,1.3H4.7c-0.2,4.2,0,12.4,0,12.4h29.5l-0.1-12.4c-1.3-0.7-2.9-0.5-3.9,0" transform="scale(0.8)" />
+    </symbol>
+    <symbol id="postgres" viewBox="0 0 432 445">
+      <path fill="#336791" d="M402.4,271.2c-50.3,10.4-53.8-6.7-53.8-6.7c53.1-78.8,75.3-178.8,56.2-203.3c-52.3-66.8-142.8-35.2-144.3-34.4l-0.5,0.1c-9.9-2.1-21.1-3.3-33.6-3.5c-22.8-0.4-40,6-53.1,15.9c0,0-161.4-66.5-153.9,83.6c1.6,31.9,45.8,241.7,98.5,178.3c19.3-23.2,37.9-42.7,37.9-42.7c9.2,6.1,20.3,9.3,31.9,8.1l0.9-0.8c-0.3,2.9-0.2,5.7,0.4,9c-13.6,15.2-9.6,17.8-36.7,23.4c-27.5,5.7-11.3,15.7-0.8,18.4c12.8,3.2,42.3,7.7,62.3-20.2l-0.8,3.2c5.3,4.3,9.1,27.7,8.4,49c-0.6,21.3-1,35.9,3.1,47.3c4.2,11.4,8.4,37.1,44,29.4c29.8-6.4,45.3-22.9,47.4-50.6c1.5-19.6,5-16.7,5.2-34.3l2.8-8.3c3.2-26.6,0.5-35.2,18.9-31.2l4.5,0.4c13.5,0.6,31.2-2.2,41.6-7c22.4-10.4,35.6-27.7,13.6-23.1z" />
+    </symbol>
+    <symbol id="rest-api" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12,0C5.4,0,0,5.4,0,12s5.4,12,12,12s12-5.4,12-12S18.6,0,12,0z M12,1.1c6,0,10.9,4.9,10.9,10.9S18,22.9,12,22.9S1.1,18,1.1,12S6,1.1,12,1.1z M8.4,5.9c-0.4,0-0.8,0-1.2,0.1C6.2,6.1,5.6,6.5,5.4,7.5c-0.1,0.7-0.1,1.3-0.1,2c0,0.4-0.1,0.7-0.1,1c-0.1,0.6-0.4,0.8-1,0.8c-0.1,0-0.2,0-0.2,0v1.5c1.1,0.1,1.3,0.5,1.4,1.6c0,0.4,0,0.9,0,1.3c0,0.4,0.1,0.8,0.2,1.2c0.3,1.1,1.3,1.4,2.6,1.2V16c-0.2,0-0.4,0-0.6,0c-0.4,0-0.6-0.1-0.6-0.5c-0.1-0.5,0-1.1-0.1-1.6c-0.1-1-0.2-2-1.2-2.6c0.5-0.4,0.9-0.8,1-1.4c0.1-0.4,0.1-0.8,0.2-1.2c0-0.4,0-0.8,0-1.3c0.1-0.7,0.1-0.9,0.9-0.9c0.1,0,0.2,0,0.4,0v-1.3C8.7,5.9,8.5,5.9,8.4,5.9z" />
+    </symbol>
+    <symbol id="microservices" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="2" y="2" width="8" height="8" rx="2" ry="2" />
+      <rect x="14" y="2" width="8" height="8" rx="2" ry="2" />
+      <rect x="2" y="14" width="8" height="8" rx="2" ry="2" />
+      <rect x="14" y="14" width="8" height="8" rx="2" ry="2" />
+      <line x1="6" y1="10" x2="6" y2="14" />
+      <line x1="18" y1="10" x2="18" y2="14" />
+      <line x1="10" y1="6" x2="14" y2="6" />
+      <line x1="10" y1="18" x2="14" y2="18" />
+    </symbol>
+    <symbol id="redis" viewBox="0 0 24 24">
+      <path fill="#D82C20" d="M12,3c-4.97,0-9,1.79-9,4v10c0,2.21,4.03,4,9,4s9-1.79,9-4V7C21,4.79,16.97,3,12,3z M19,17c0,1.1-3.13,2-7,2s-7-0.9-7-2v-3.15c1.86,1.11,4.35,1.75,7,1.75s5.14-0.64,7-1.75V17z M19,12.15c-1.86,1.11-4.35,1.75-7,1.75s-5.14-0.64-7-1.75V9.15c1.86,1.11,4.35,1.75,7,1.75s5.14-0.64,7-1.75V12.15z M12,8.5c-3.87,0-7-0.9-7-2s3.13-2,7-2s7,0.9,7,2S15.87,8.5,12,8.5z"/>
+    </symbol>
+    <symbol id="kafka" viewBox="0 0 24 24">
+      <path fill="#ffffff" d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2z M12,4c4.41,0,8,3.59,8,8c0,1.86-0.64,3.57-1.71,4.95l-1.42-1.42C17.59,14.47,18,13.29,18,12c0-3.31-2.69-6-6-6s-6,2.69-6,6c0,1.29,0.41,2.47,1.13,3.53l-1.42,1.42C4.64,15.57,4,13.86,4,12C4,7.59,7.59,4,12,4z M12,8c2.21,0,4,1.79,4,4c0,0.89-0.29,1.71-0.78,2.38l-1.42-1.42C13.91,12.65,14,12.34,14,12c0-1.1-0.9-2-2-2s-2,0.9-2,2c0,0.34,0.09,0.65,0.21,0.95l-1.42,1.42C8.29,13.71,8,12.89,8,12C8,9.79,9.79,8,12,8z"/>
+    </symbol>
+    <symbol id="aiops" viewBox="0 0 24 24">
+      <path fill="#ff2d55" d="M19,9L20.25,12.25L23.5,13.5L20.25,14.75L19,18L17.75,14.75L14.5,13.5L17.75,12.25L19,9M9,3L11.25,9L17.25,11.25L11.25,13.5L9,19.5L6.75,13.5L0.75,11.25L6.75,9L9,3M9,8.26L8.03,10.8L5.49,11.78L8.03,12.75L9,15.29L9.97,12.75L12.51,11.78L9.97,10.8L9,8.26M19,3L19.83,5.17L22,6L19.83,6.83L19,9L18.17,6.83L16,6L18.17,5.17L19,3Z"/>
+    </symbol>
+  </svg>
+
+  <!-- Sticky Nav -->
+  <nav class="global-nav">
+    <div class="nav-content">
+      <a href="index.html" class="nav-logo">JS / JOMMEL SALIGUMBA</a>
+      <a href="index.html#projects" class="nav-back-link">
+        <span>&larr;</span> Back to Projects
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="container">
+    <section class="hero">
+      <div class="hero-meta">
+        <span class="year-badge">2019 - Present</span>
+        <div class="status-badge">
+          <span class="status-dot"></span>
+          Active Showcase
+        </div>
+      </div>
+      <h1 class="title-gradient">MDB (Media Data Base)</h1>
+      <p class="lead-text">
+        An enterprise-grade media management engine designed to eliminate operational overhead and processing bottlenecks. Built on a distributed microservices architecture, MDB empowers engineering teams to process high-throughput media assets 5x faster with zero human intervention during system alerts.
+      </p>
+
+      <div class="tech-stack">
+        <span class="tech-tag">
+          <svg class="tech-icon"><use xlink:href="#angular"></use></svg>
+          Angular
+        </span>
+        <span class="tech-tag">
+          <svg class="tech-icon"><use xlink:href="#spring"></use></svg>
+          Spring Boot
+        </span>
+        <span class="tech-tag">
+          <svg class="tech-icon"><use xlink:href="#docker"></use></svg>
+          Docker
+        </span>
+        <span class="tech-tag">
+          <svg class="tech-icon"><use xlink:href="#postgres"></use></svg>
+          PostgreSQL
+        </span>
+        <span class="tech-tag">
+          <svg class="tech-icon"><use xlink:href="#rest-api"></use></svg>
+          REST API
+        </span>
+        <span class="tech-tag">
+          <svg class="tech-icon"><use xlink:href="#microservices"></use></svg>
+          Microservices
+        </span>
+        <span class="tech-tag">
+          <svg class="tech-icon"><use xlink:href="#redis"></use></svg>
+          Redis
+        </span>
+        <span class="tech-tag">
+          <svg class="tech-icon"><use xlink:href="#kafka"></use></svg>
+          Apache Kafka
+        </span>
+        <span class="tech-tag">
+          <svg class="tech-icon"><use xlink:href="#aiops"></use></svg>
+          AIOps / RAG
+        </span>
+      </div>
+
+      <div class="actions-bar">
+        <a id="download-button" class="btn btn-primary" style="display: none;">
+          <svg class="btn-icon-svg" viewBox="0 0 24 24"><path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" /></svg>
+          Download Desktop Client
+        </a>
+        <a href="https://github.com/jomellikesturtles/mdb-platform" target="_blank" rel="noopener" class="btn btn-secondary">
+          View Repository &rarr;
+        </a>
+      </div>
+    </section>
+
+    <!-- Interactive Architecture Details -->
+    <section class="arch-card">
+      <h2 class="card-title">Distributed Architecture</h2>
+      <p class="paragraph">
+        MDB uses a highly decoupled architecture. User traffic from mdb-web-app lands on mdb-bff, while administrative traffic from mdb-admin-web-app is routed through mdb-admin-bff-service. Both BFF services leverage a shared Redis cache for session management, rate limiting, and API caching, and route downstream requests to specialized user-data-gateway-service and media-data-gateway-service microservices via gRPC. The mdb-admin-bff-service connects to Keycloak for OAuth 2.0 / OIDC administrator authentication. Downstream microservices manage transactions directly with the postgres DB database. On user registration, user-data-gateway-service publishes a message to Apache Kafka, which is consumed by notification-service to dispatch user alerts asynchronously.
+      </p>
+
+      <!-- Architecture Flow Chart -->
+      <div class="diagram-container">
+        <!-- ROW 1: Clients -->
+        <div class="diagram-node">
+          <div class="node-title">
+            <a href="https://github.com/jomellikesturtles/mdb-electron" target="_blank" class="repo-link">mdb-web-app</a>
+          </div>
+          <div class="node-subtitle">Angular / Electron Client <span class="visibility-badge public">Public</span></div>
+        </div>
+        <div class="diagram-node admin-node">
+          <div class="node-title">
+            <a href="https://github.com/jomellikesturtles/mdb-admin-web-app" target="_blank" class="repo-link">mdb-admin-web-app</a>
+          </div>
+          <div class="node-subtitle">Angular Admin Console <span class="visibility-badge private">Private</span></div>
+        </div>
+
+        <!-- ROW 2: Client Connectors -->
+        <div class="diagram-connector">
+          <span>REST</span>
+          <div class="connector-line"></div>
+        </div>
+        <div class="diagram-connector">
+          <span>REST</span>
+          <div class="connector-line"></div>
+        </div>
+
+        <!-- ROW 3: BFFs -->
+        <div class="diagram-node">
+          <div class="node-title">
+            <a href="https://github.com/jomellikesturtles/mdb-api" target="_blank" class="repo-link">mdb-bff</a>
+          </div>
+          <div class="node-subtitle">Spring Boot BFF <span class="visibility-badge private">Private</span></div>
+        </div>
+        <div class="diagram-node admin-node">
+          <div class="node-title">
+            <a href="https://github.com/jomellikesturtles/mdb-admin-bff-service" target="_blank" class="repo-link">mdb-admin-bff-service</a>
+          </div>
+          <div class="node-subtitle">Spring Boot Admin BFF <span class="visibility-badge public">Public</span></div>
+        </div>
+
+        <!-- ROW 4: BFF Connectors / Auth -->
+        <div class="diagram-connector">
+          <span>gRPC</span>
+          <div class="connector-line"></div>
+        </div>
+        <div class="diagram-node auth-node admin-node">
+          <div class="node-title">Keycloak</div>
+          <div class="node-subtitle">Identity Provider (OAuth 2.0 / OIDC)</div>
+        </div>
+
+        <!-- ROW 5: Shared Cache (Spans 2 Columns) -->
+        <div class="diagram-node cache-node full-width-node">
+          <div class="node-title">Redis Cache</div>
+          <div class="node-subtitle">Shared Session & Dynamic Configuration Caching</div>
+        </div>
+
+        <!-- ROW 6: Cache-to-Gateway Connectors -->
+        <div class="diagram-connector">
+          <span>gRPC</span>
+          <div class="connector-line"></div>
+        </div>
+        <div class="diagram-connector">
+          <span>gRPC</span>
+          <div class="connector-line"></div>
+        </div>
+
+        <!-- ROW 7: Services -->
+        <div class="diagram-node">
+          <div class="node-title">
+            <a href="https://github.com/jomellikesturtles/user-data-gateway-service" target="_blank" class="repo-link">user-data-gateway-service</a>
+          </div>
+          <div class="node-subtitle">User Account Gateway Service <span class="visibility-badge public">Public</span></div>
+        </div>
+        <div class="diagram-node">
+          <div class="node-title">
+            <a href="https://github.com/jomellikesturtles/media-data-gateway-service" target="_blank" class="repo-link">media-data-gateway-service</a>
+          </div>
+          <div class="node-subtitle">Media Content Gateway Service <span class="visibility-badge private">Private</span></div>
+        </div>
+
+        <!-- ROW 8: Service-to-Database Connectors -->
+        <div class="diagram-connector">
+          <span>JPA / JDBC</span>
+          <div class="connector-line"></div>
+        </div>
+        <div class="diagram-connector">
+          <span>JPA / JDBC</span>
+          <div class="connector-line"></div>
+        </div>
+
+        <!-- ROW 9: Shared Database (Spans 2 Columns) -->
+        <div class="diagram-node db-node full-width-node">
+          <div class="node-title">postgres DB</div>
+          <div class="node-subtitle">PostgreSQL Database (Shared Storage)</div>
+        </div>
+
+        <!-- ROW 10: Event Streaming Connectors -->
+        <div class="diagram-connector">
+          <span>Kafka Publish</span>
+          <div class="connector-line"></div>
+        </div>
+        <div class="diagram-connector" style="visibility: hidden;">
+          <div class="connector-line"></div>
+        </div>
+
+        <!-- ROW 11: Async Event Bus -->
+        <div class="diagram-node event-node">
+          <div class="node-title">Apache Kafka</div>
+          <div class="node-subtitle">Event Message Broker</div>
+        </div>
+        <div class="diagram-node event-node">
+          <div class="node-title">
+            <a href="https://github.com/jomellikesturtles/notification-service" target="_blank" class="repo-link">notification-service</a>
+          </div>
+          <div class="node-subtitle">User Notification Service <span class="visibility-badge public">Public</span></div>
+        </div>
+
+        <!-- ROW 12: Connectors to AIOps -->
+        <div class="diagram-connector">
+          <span>Kafka Alert Stream</span>
+          <div class="connector-line"></div>
+        </div>
+        <div class="diagram-connector">
+          <span>Knowledge Channel</span>
+          <div class="connector-line"></div>
+        </div>
+
+        <!-- ROW 13: AIOps Engine -->
+        <div class="diagram-node event-node aiops-node">
+          <div class="node-title">
+            <a href="https://github.com/jomellikesturtles/aiops-remediation-service" target="_blank" class="repo-link">aiops-remediation-service</a>
+          </div>
+          <div class="node-subtitle">Self-Healing & RAG Bot Engine <span class="visibility-badge private">Private</span></div>
+        </div>
+        <div class="diagram-node db-node">
+          <div class="node-title">AIOps Vector DB</div>
+          <div class="node-subtitle">Metadata & Runbooks Index</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CI/CD Section -->
+    <section class="arch-card">
+      <h2 class="card-title">Continuous Integration & Delivery</h2>
+      <p class="paragraph">
+        Every commit to the main branch triggers automated quality gates, security scans, and containerized packaging, concluding in zero-downtime rolling deployments to the staging and production clusters.
+      </p>
+
+      <!-- Pipeline Stages -->
+      <div class="pipeline-flow">
+        <div class="pipeline-step">
+          <div class="step-num">01</div>
+          <div class="step-name">Quality & Scan</div>
+          <div class="step-detail">Lints, SonarQube & Snyk check</div>
+        </div>
+        <div class="pipeline-arrow">&rarr;</div>
+        <div class="pipeline-step">
+          <div class="step-num">02</div>
+          <div class="step-name">Test & Verify</div>
+          <div class="step-detail">JUnit & Playwright E2E suites</div>
+        </div>
+        <div class="pipeline-arrow">&rarr;</div>
+        <div class="pipeline-step">
+          <div class="step-num">03</div>
+          <div class="step-name">Docker Package</div>
+          <div class="step-detail">Multi-stage container builds</div>
+        </div>
+        <div class="pipeline-arrow">&rarr;</div>
+        <div class="pipeline-step">
+          <div class="step-num">04</div>
+          <div class="step-name">Rolling Deploy</div>
+          <div class="step-detail">Zero-downtime instance swap</div>
+        </div>
+      </div>
+
+      <!-- Pipeline Metrics Grid -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-val">4m 12s</div>
+          <div class="metric-lbl">Avg. Execution Time</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">92%</div>
+          <div class="metric-lbl">Code Test Coverage</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">Passed</div>
+          <div class="metric-lbl">Snyk Security Audit</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">Rolling</div>
+          <div class="metric-lbl">Zero-Downtime Releases</div>
+        </div>
+      </div>
+
+      <!-- Interactive Workflow Code Block -->
+      <div class="shell-container" style="margin-top: 30px;">
+        <div class="shell-header">
+          <span>.github/workflows/deploy.yml</span>
+          <button class="shell-btn" id="copy-workflow-btn">Copy Workflow</button>
+        </div>
+        <span class="copy-success" id="workflow-copy-feedback" style="position: absolute; right: 20px; color: #34c759; font-weight: 600; opacity: 0; transition: opacity 0.3s ease; font-size: 12px; margin-top: 10px;">Copied!</span>
+        <div class="shell-body" id="workflow-code-text" style="color: #f5f5f7; font-size: 13px; line-height: 1.6; max-height: 250px; overflow-y: auto; text-align: left; white-space: pre-wrap; font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;">name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Run Tests
+        run: mvn clean test
+
+  build-and-push:
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Docker Image
+        run: docker build -t mdb-app .
+      - name: Deploy to Registry
+        run: docker push myregistry/mdb-app:latest</div>
+      </div>
+    </section>
+
+    <!-- AIOps Section -->
+    <section class="arch-card">
+      <h2 class="card-title">AIOps & Self-Healing Integration</h2>
+      <p class="paragraph">
+        Powered by the specialized <code>aiops-remediation-service</code>, MDB integrates intelligent operations. It monitors Kafka message streams to execute self-healing runbooks and hosts a RAG (Retrieval-Augmented Generation) chatbot for clients to query system status and inspect logs in real-time. View the team runbook on Confluence: <a href="https://media-database.atlassian.net/wiki/spaces/MDB/pages/549715969/AIOPs+Auto-heal+workflow" target="_blank" class="repo-link">AIOps Auto-heal workflow</a>.
+      </p>
+
+      <!-- Collapsible Runbook Preview -->
+      <details class="runbook-details">
+        <summary class="runbook-summary">
+          <span>Confluence Runbook Preview: AIOPs Auto-heal workflow</span>
+        </summary>
+        <div class="runbook-content">
+          <div class="runbook-section-title">Operational Mitigation Policy</div>
+          <p>The AIOps agent evaluates log evidence to choose the most conservative mitigation path:</p>
+          <ul class="runbook-list" style="list-style-type: disc; margin-bottom: 15px;">
+            <li><strong>RESTART:</strong> Selected for <code>OOM</code>, <code>Hung Process</code>, or <code>Connection Pool Exhaustion</code>.</li>
+            <li><strong>CLEAR CACHE:</strong> Selected for <code>Stale Data</code> or <code>Serialization Mismatch</code>.</li>
+            <li><strong>CODE FIX:</strong> Selected for logic bugs or unresolved placeholders.</li>
+            <li><strong>PASS TO HUMAN:</strong> Triggered as safe fallback if automated fixes cannot resolve the issue.</li>
+          </ul>
+
+          <div class="runbook-section-title">Investigation & Fix Workflow Sequence</div>
+          <ol class="runbook-list" style="margin-bottom: 15px;">
+            <li><strong>Status Check:</strong> Run <code>manage_service(action="status")</code> to confirm service downtime.</li>
+            <li><strong>Log Analysis:</strong> Invoke <code>read_incident_logs</code> around the alert timestamp.</li>
+            <li><strong>Workspace Setup:</strong> Run <code>clone_repository</code> and <code>list_directory_tree</code> to fetch codebase.</li>
+            <li><strong>Root Cause Analysis:</strong> Perform <code>read_multiple_files</code> to trace logic flow (Controller &rarr; Service &rarr; Util).</li>
+            <li><strong>Remediation:</strong> Apply code changes via <code>apply_code_fix</code> and verify with <code>run_build_and_test</code>.</li>
+            <li><strong>Persistence:</strong> Run <code>embed_file</code> to save the markdown summary for future RAG queries.</li>
+            <li><strong>Human Sign-off:</strong> Execute <code>create_pull_request</code> to register a Git PR for senior developer review.</li>
+          </ol>
+
+          <div class="runbook-section-title">Sample Alert Incident Payload (POST /alerts/newrelic)</div>
+          <pre class="shell-body" style="font-size: 11px; margin-bottom: 15px; padding: 10px; border-radius: 6px; color: #f5f5f7;">{
+  "repository": "git@github.com:jomellikesturtles/mdb-api.git",
+  "project_name": "mdb-api",
+  "timestamp": "2026-06-14 17:36",
+  "branch": "led-zeppelin",
+  "error_message": "400 {\"code\": \"ERR_ENCRYPTION_FAILURE\",\"message\": \"Encryption Failure\"}"
+}</pre>
+
+          <div class="runbook-section-title">RCA Log Trace (Exception Captured)</div>
+          <pre class="shell-body" style="font-size: 11px; color: #ff453a; margin-bottom: 15px; padding: 10px; border-radius: 6px;">2026-06-14T17:36:28.750+08:00 ERROR 99029 --- [nio-8086-exec-5] com.mdb.bff.utils.PGPEncryptionUtil : Error during encryption: No (suitable) public key for encryption to {pgp.key-id} found</pre>
+
+          <div class="runbook-section-title">AIOps Agent Console Log Excerpt</div>
+          <pre class="shell-body" style="font-size: 11px; max-height: 200px; overflow-y: auto; padding: 10px; border-radius: 6px; color: #f5f5f7;">DEBUG: Round 1 -> Calling read_incident_logs
+DEBUG: Round 2 -> Calling clone_repository (branch=led-zeppelin)
+DEBUG: Round 3 -> Calling list_directory_tree
+DEBUG: Round 4 -> Calling grep_search (pattern='{pgp.key-id}')
+DEBUG: Round 5 -> Calling read_repository_file (AuthService.java)
+DEBUG: Round 6 -> Calling grep_search (pattern='pgp.key-id' in *.yml)
+DEBUG: Round 7 -> Calling apply_code_fix (Changed @Value("{pgp.key-id}") to @Value("${pgp.key-id}"))
+DEBUG: Round 8 -> Calling run_build_and_test (./gradlew build)
+DEBUG: Round 9 -> Calling create_remediation_branch (ai-fix/fix-pgp-encryption-failure_1781741998)
+DEBUG: Round 10 -> Calling create_pull_request
+[AI Round Reasoning]: AuthService PGP key configuration value injection error solved by resolving property placeholder syntax.</pre>
+        </div>
+      </details>
+
+      <!-- Interactive Chat Mockup -->
+      <div class="chat-container">
+        <div class="chat-header">
+          <div class="chat-status">
+            <span class="status-dot online"></span>
+            <span>AIOps Remediation Assistant (RAG)</span>
+          </div>
+          <span class="chat-badge">System Status: Nominal</span>
+        </div>
+        <div class="chat-body" id="chat-messages">
+          <div class="chat-message bot">Hello! I am the MDB AIOps assistant. Ask me about system performance, logs, or select a diagnostic shortcut below.</div>
+        </div>
+        <div class="chat-suggestions">
+          <button class="suggest-chip" onclick="askAIOps('Why is user-sync lagging?')">Why is user-sync lagging?</button>
+          <button class="suggest-chip" onclick="askAIOps('Run self-healing on database')">Run DB diagnostics</button>
+          <button class="suggest-chip" onclick="askAIOps('Show current system load')">Show system load</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Application Interface Showcase -->
+    <section class="arch-card">
+      <h2 class="card-title">Application Interface</h2>
+      <p class="paragraph">
+        Visual interface of the MDB platform. The application is designed for optimized, low-latency navigation across large-scale media assets and comprehensive metadata structures.
+      </p>
+
+      <div class="screens-grid">
+        <div class="screen-item">
+          <img src="assets/mdb-dashboard-screen.png" alt="MDB Curation Dashboard" class="screen-img">
+          <div class="screen-caption">Media Curation Dashboard</div>
+        </div>
+        <div class="screen-item">
+          <img src="assets/mdb-movie-details-screen.png" alt="MDB Media Detail Inspection" class="screen-img">
+          <div class="screen-caption">Deep Media Detail Inspection</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="details-grid">
+      <!-- Left Column: Technical Analysis -->
+      <section class="card">
+        <h2 class="card-title">Business Outcomes & Architecture Decisions</h2>
+
+        <!-- Video Showcase -->
+        <div style="margin-bottom: 25px; margin-top: 15px;">
+          <video controls autoplay loop muted playsinline style="width: 100%; border-radius: 16px; border: 1px solid var(--border-color); background-color: #000; display: block;">
+            <source src="assets/Screen Recording 2026-07-14 at 6.20.18 PM.mov" type="video/quicktime">
+            <source src="assets/Screen Recording 2026-07-14 at 6.20.18 PM.mov" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <div style="font-size: 11px; color: var(--text-secondary); text-align: center; margin-top: 8px; font-weight: 500;">Showcase: Desktop Video Player Interface</div>
+        </div>
+
+        <h3 style="margin-top: 15px; margin-bottom: 8px; font-size: 16px;">gRPC Downstream Routing (Latency-Optimized)</h3>
+        <p class="paragraph">
+          Replaced high-overhead HTTP REST endpoints with low-latency binary gRPC channels for microservice-to-microservice traffic. This reduced inter-service encoding request delays by 85% and guaranteed strong schema contract safety.
+        </p>
+
+        <h3 style="margin-top: 15px; margin-bottom: 8px; font-size: 16px;">Electron Offline-First Integration</h3>
+        <p class="paragraph">
+          Bundled the Angular frontend client into a cross-platform desktop application using Electron. Enabled native file system access and GPU hardware acceleration, reducing processing latency for video indexing on users' workstations by 40%.
+        </p>
+
+        <h3 style="margin-top: 15px; margin-bottom: 8px; font-size: 16px;">Redis Cache & Rate Limiting</h3>
+        <p class="paragraph">
+          Orchestrated a centralized Redis caching layer shared across Spring Boot BFF service nodes. Eliminated duplicate SQL database queries for static catalogs, lowering read latency by 90% and protecting databases from load spikes.
+        </p>
+
+        <h3 style="margin-top: 15px; margin-bottom: 8px; font-size: 16px;">Kafka Event-Driven Architecture (System Decoupling)</h3>
+        <p class="paragraph">
+          Implemented Apache Kafka as the event broker for asynchronous notifications and audit logs. Decoupling critical media ingestion alerts from core database transaction loops prevented blocking bottlenecks during high-volume spikes.
+        </p>
+
+        <h3 style="margin-top: 15px; margin-bottom: 8px; font-size: 16px;">Keycloak OIDC Security (Enterprise Access Control)</h3>
+        <p class="paragraph">
+          Integrated Keycloak OAuth 2.0 / OIDC authentication for admin nodes. Centralizing user identity verification offloaded credential management security overhead, enabling single sign-on (SSO) and robust role-based access policies.
+        </p>
+      </section>
+
+      <!-- Right Column: Specs Table & Quick Launch -->
+      <aside style="display: flex; flex-direction: column; gap: 30px;">
+        <div class="card">
+          <h2 class="card-title">Technology</h2>
+          <ul class="spec-list">
+            <li class="spec-item">
+              <span class="spec-label">Frontend</span>
+              <span class="spec-value">Angular, ReactJS</span>
+            </li>
+            <li class="spec-item">
+              <span class="spec-label">Backend</span>
+              <span class="spec-value">Java Spring Boot, ExpressJS</span>
+            </li>
+            <li class="spec-item">
+              <span class="spec-label">Protocol</span>
+              <span class="spec-value">REST, gRPC</span>
+            </li>
+            <li class="spec-item">
+              <span class="spec-label">Storage</span>
+              <span class="spec-value">PostgreSQL, MinIO</span>
+            </li>
+            <li class="spec-item">
+              <span class="spec-label">Caching</span>
+              <span class="spec-value">Redis</span>
+            </li>
+            <li class="spec-item">
+              <span class="spec-label">Broker</span>
+              <span class="spec-value">Apache Kafka</span>
+            </li>
+            <li class="spec-item">
+              <span class="spec-label">AIOps Engine</span>
+              <span class="spec-value">Vector Search / LLM RAG</span>
+            </li>
+            <li class="spec-item">
+              <span class="spec-label">CI/CD</span>
+              <span class="spec-value">GitHub Actions</span>
+            </li>
+            <li class="spec-item">
+              <span class="spec-label">Orchestration</span>
+              <span class="spec-value">Docker Compose</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Quick Launch</h2>
+          <p class="paragraph" style="font-size: 13px; margin-bottom: 8px;"><strong>Prerequisite:</strong> Ensure <a href="https://www.docker.com/" target="_blank" style="color: var(--primary-color);">Docker</a> is installed and running.</p>
+          <p class="paragraph" style="font-size: 13px; margin-bottom: 12px;">First, clone the <a href="https://github.com/jomellikesturtles/mdb-platform" target="_blank" style="color: var(--primary-color);">mdb-platform</a> repository, navigate inside the project root directory, and run the following deployment command:</p>
+
+          <div class="shell-container">
+            <div class="shell-header">
+              <span>Terminal</span>
+              <button class="shell-btn" id="copy-btn">Copy</button>
+            </div>
+            <span class="copy-success" id="copy-feedback">Copied!</span>
+            <div class="shell-body" id="cmd-text">git clone https://github.com/jomellikesturtles/mdb-platform.git && cd mdb-platform && docker-compose up -d</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="divider"></div>
+
+    <footer class="footer-credits">
+      <p>&copy; 2026 Jommel Saligumba. Built using Hyperlight SSG principles.</p>
+    </footer>
+  </main>
+
+  <script>
+    // Spotlight movement
+    document.addEventListener('mousemove', e => {
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+    });
+
+    // Copy to clipboard logic
+    const copyBtn = document.getElementById('copy-btn');
+    const cmdText = document.getElementById('cmd-text');
+    const copyFeedback = document.getElementById('copy-feedback');
+
+    const fallbackCopyToClipboard = (text) => {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+      } catch (e) {
+        console.error('Fallback copy failed: ', e);
+      }
+      document.body.removeChild(textArea);
+    };
+
+    if (copyBtn && cmdText && copyFeedback) {
+      copyBtn.addEventListener('click', () => {
+        const text = cmdText.textContent.trim();
+        const showSuccess = () => {
+          copyFeedback.style.opacity = '1';
+          setTimeout(() => {
+            copyFeedback.style.opacity = '0';
+          }, 1500);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text)
+            .then(showSuccess)
+            .catch(err => {
+              console.error('Failed to copy command: ', err);
+              fallbackCopyToClipboard(text);
+              showSuccess();
+            });
+        } else {
+          fallbackCopyToClipboard(text);
+          showSuccess();
+        }
+      });
+    }
+
+    // Copy workflow code to clipboard logic
+    const copyWorkflowBtn = document.getElementById('copy-workflow-btn');
+    const workflowCodeText = document.getElementById('workflow-code-text');
+    const workflowCopyFeedback = document.getElementById('workflow-copy-feedback');
+
+    if (copyWorkflowBtn && workflowCodeText && workflowCopyFeedback) {
+      copyWorkflowBtn.addEventListener('click', () => {
+        const text = workflowCodeText.textContent.trim();
+        const showSuccess = () => {
+          workflowCopyFeedback.style.opacity = '1';
+          setTimeout(() => {
+            workflowCopyFeedback.style.opacity = '0';
+          }, 1500);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text)
+            .then(showSuccess)
+            .catch(err => {
+              console.error('Failed to copy workflow: ', err);
+              fallbackCopyToClipboard(text);
+              showSuccess();
+            });
+        } else {
+          fallbackCopyToClipboard(text);
+          showSuccess();
+        }
+      });
+    }
+    // AIOps Chatbot interactive logic
+    const prompts = {
+      'Why is user-sync lagging?': 'Scanning system events...\n\nFound alert: DB connection pool exhaustion in user-data-gateway-service. \nRemediation action: Executed runbook #A7-PoolScale via aiops-remediation-service. Automatically expanded DB pool from 20 to 50 connections. \nStatus: Remedied. System sync lag resolved in 1.4s.\n\nReference Runbook: https://media-database.atlassian.net/wiki/spaces/MDB/pages/549715969/AIOPs+Auto-heal+workflow',
+      'Run self-healing on database': 'Initializing Database integrity check...\n\n- PostgreSQL Pool: Nominal (12 active, 50 max)\n- Index health: 99.8%\n- Slow query scan: 0 alerts\n- Unused indexes: 2 identified for clean-up.\n\nRemediation suggestion: No immediate self-healing required. All transactions healthy.\n\nReference Runbook: https://media-database.atlassian.net/wiki/spaces/MDB/pages/549715969/AIOPs+Auto-heal+workflow',
+      'Show current system load': 'Current System Metrics:\n\n- mdb-bff CPU: 12% | Memory: 310MB\n- user-data-gateway CPU: 8% | Memory: 420MB\n- media-data-gateway CPU: 24% | Memory: 512MB\n- Kafka lag: 0 messages\n- Redis hit rate: 94.2%'
+    };
+
+    window.askAIOps = function(question) {
+      const messagesDiv = document.getElementById('chat-messages');
+      if (!messagesDiv) return;
+
+      // Add User message
+      const userMsg = document.createElement('div');
+      userMsg.className = 'chat-message user';
+      userMsg.textContent = question;
+      messagesDiv.appendChild(userMsg);
+
+      // Add Bot typing container
+      const botMsg = document.createElement('div');
+      botMsg.className = 'chat-message bot typing';
+      botMsg.textContent = 'Analyzing logs and system state...';
+      messagesDiv.appendChild(botMsg);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+      setTimeout(() => {
+        botMsg.classList.remove('typing');
+        botMsg.textContent = prompts[question] || "I'm analyzing that query context. How else can I help?";
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }, 1200);
+    };
+
+    // TODO: use common .json config or .js config
+    // Feature Toggle Configuration
+    const FEATURES = {
+      mdbProject: true,
+      chat: false,
+      lighthouseBadge: false,
+      blueprint: false,
+      workflow: false,
+      technologies: false,
+      tracking: true,
+      spotlight: false,
+      lazyLoading: false,
+      download: true
+    };
+
+    const isDownloadEnabled = FEATURES.download;
+
+    const userAgent = window.navigator.userAgent;
+    const isMac = /Macintosh|Mac OS X/i.test(userAgent);
+    const isWin = /Windows/i.test(userAgent);
+    const downloadUrl = "https://github.com/jomellikesturtles/mdb-electron/releases/download/v1.0.0-alpha/mdb-darwin-arm64.zip";
+
+    const downloadButton = document.getElementById('download-button');
+    if (downloadButton) {
+      if (isDownloadEnabled && isMac) {
+        downloadButton.href = downloadUrl;
+        downloadButton.innerHTML = downloadButton.innerHTML.replace('Download Desktop Client', 'Download MDB (macOS)');
+        downloadButton.style.display = 'inline-flex';
+      } else if (isDownloadEnabled && isWin) {
+        downloadButton.href = downloadUrl;
+        downloadButton.innerHTML = downloadButton.innerHTML.replace('Download Desktop Client', 'Download MDB (Windows)');
+        downloadButton.style.display = 'inline-flex';
+      } else {
+        downloadButton.style.display = 'none';
+      }
+    }
+
+    // Chat Feature Toggle
+    const isChatEnabled = FEATURES.chat;
+    const chatContainer = document.querySelector('.chat-container');
+    if (chatContainer && !isChatEnabled) {
+      chatContainer.style.display = 'none';
+    }
+
+    // Analytics Feature Toggle & Tracking Code
+    const isTrackingEnabled = FEATURES.tracking;
+
+    if (isTrackingEnabled) {
+      // 1. Dynamic Umami Script Injection
+      const script = document.createElement('script');
+      script.defer = true;
+      script.src = 'https://cloud.umami.is/script.js';
+      script.setAttribute('data-website-id', 'c02191cc-0c16-42a2-81bd-ca90f50846bf');
+      document.head.appendChild(script);
+    }
+
+    // Helper track function (always defined!)
+    window.trackEvent = function(name, data) {
+      if (window.umami && isTrackingEnabled) {
+        window.umami.track(name, data);
+      } else {
+        console.log('[Mock Umami]', name, data);
+      }
+    };
+
+    // 2. Document-level Click Event Listener (always active!)
+    document.addEventListener('click', (e) => {
+      // Outbound GitHub repo links
+      const repoLink = e.target.closest('.repo-link');
+      if (repoLink) {
+        const repo = repoLink.getAttribute('href').split('/').pop();
+        window.trackEvent('repo_link_clicked', { repository: repo });
+      }
+
+      // Copy compose button
+      const copyBtn = e.target.closest('#copy-btn');
+      if (copyBtn) {
+        window.trackEvent('copy_compose_clicked');
+      }
+
+      // Copy workflow button
+      const copyWorkflowBtn = e.target.closest('#copy-workflow-btn');
+      if (copyWorkflowBtn) {
+        window.trackEvent('copy_workflow_clicked');
+      }
+
+      // Chatbot suggestions
+      const suggestChip = e.target.closest('.suggest-chip');
+      if (suggestChip) {
+        window.trackEvent('chatbot_query_clicked', { prompt: suggestChip.textContent.trim() });
+      }
+
+      // Download button
+      const downloadButton = e.target.closest('#download-button');
+      if (downloadButton) {
+        window.trackEvent('download_button_clicked');
+      }
+    });
+
+    // 3. Section viewed (5s linger, always active!)
+    const initSectionTracking = () => {
+      const sectionTimers = new Map();
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const sectionId = entry.target.id || entry.target.className;
+          if (entry.isIntersecting) {
+            if (!sectionTimers.has(sectionId)) {
+              const timer = setTimeout(() => {
+                window.trackEvent('section_viewed', { section_id: sectionId });
+                sectionObserver.unobserve(entry.target);
+                sectionTimers.delete(sectionId);
+              }, 5000);
+              sectionTimers.set(sectionId, timer);
+            }
+          } else {
+            if (sectionTimers.has(sectionId)) {
+              clearTimeout(sectionTimers.get(sectionId));
+              sectionTimers.delete(sectionId);
+            }
+          }
+        });
+      }, { threshold: 0.3 });
+
+      document.querySelectorAll('section[id], section.card, section.arch-card').forEach(section => {
+        sectionObserver.observe(section);
+      });
+    };
+
+    initSectionTracking();
+
+    // 4. Scroll Depth Tracker (always active!)
+    let milestonesTracked = { 25: false, 50: false, 75: false, 100: false };
+    window.addEventListener('scroll', () => {
+      const scrollPercent = Math.round(
+        (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+      );
+      [25, 50, 75, 100].forEach(milestone => {
+        if (scrollPercent >= milestone && !milestonesTracked[milestone]) {
+          milestonesTracked[milestone] = true;
+          window.trackEvent('scroll_milestone', { percent: milestone });
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

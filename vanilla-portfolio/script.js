@@ -8,10 +8,20 @@ function trackEvent(eventName, eventArgs) {
     console.log("MOCK TRACKING: ", eventName, eventArgs)
   }
 }
+
+
+function simpleMarkdownParser(text) {
+    return text
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')     // Headers
+        .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>') // Bold text
+        .replace(/\*(.*)\*/gim, '<em>$1</em>');     // Italic text
+}
+
+
 window.addEventListener("load", () => {
   // Feature Toggle Configuration
   const FEATURES = {
-    mdbProject: false,
+    mdbProject: true,
     chat: false,
     lighthouseBadge: false,
     blueprint: false,
@@ -19,7 +29,8 @@ window.addEventListener("load", () => {
     technologies: false,
     tracking: true,
     spotlight: false,
-    lazyLoading: false
+    lazyLoading: false,
+    download: true
   };
   lazyLoading = FEATURES.lazyLoading;
   tracking_feature = FEATURES.tracking;
@@ -157,6 +168,20 @@ window.addEventListener("load", () => {
 
   initSectionTracking();
 
+  // Scroll Depth Tracker
+  let milestonesTracked = { 25: false, 50: false, 75: false, 100: false };
+  window.addEventListener('scroll', () => {
+    const scrollPercent = Math.round(
+      (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+    );
+    [25, 50, 75, 100].forEach(milestone => {
+      if (scrollPercent >= milestone && !milestonesTracked[milestone]) {
+        milestonesTracked[milestone] = true;
+        trackEvent('scroll_milestone', { percent: milestone });
+      }
+    });
+  });
+
 
   window.addEventListener('mousemove', (e) => {
     const x = e.clientX;
@@ -257,7 +282,16 @@ window.addEventListener("load", () => {
   // Dynamic Download Link Logic
   const updateDownloadLinks = () => {
     // Respect feature toggle
-    if (!FEATURES.mdbProject) return;
+    if (!FEATURES.mdbProject || !FEATURES.download) {
+      const mdbDownloadLink = document.getElementById('mdb-download-link');
+      if (mdbDownloadLink) mdbDownloadLink.style.display = 'none';
+
+      document.querySelectorAll('project-article').forEach(article => {
+        const cardLink = article.shadowRoot.getElementById('card-download-link');
+        if (cardLink) cardLink.style.display = 'none';
+      });
+      return;
+    }
 
     const userAgent = window.navigator.userAgent;
     const isMac = /Macintosh|Mac OS X/i.test(userAgent);
@@ -390,18 +424,19 @@ class ProjectArticle extends HTMLElement {
       'online': { label: 'Online', class: 'online' },
       'sunset': { label: 'Archived', class: 'sunset' },
       'private': { label: 'Internal', class: 'private' },
-      'showcase': { label: 'Showcase', class: 'showcase' }
+      'showcase': { label: 'Showcase', class: 'showcase' },
+      'progress': { label: 'In Progress', class: 'progress' }
     }[status] || { label: 'Online', class: 'online' };
 
     this.shadowRoot.innerHTML = `
     <link rel="stylesheet" href="styles.css">
     <article class="project-card ${isGolden ? 'golden-project' : ''}">
       ${val.projectUrl ? `
-        <a href="${val.projectUrl}" target="_blank" rel="noopener" class="main-card-link" aria-label="Visit ${val.title}"></a>
+        <a href="${val.projectUrl}" ${val.projectUrl.startsWith('http') ? 'target="_blank" rel="noopener"' : ''} class="main-card-link" aria-label="Visit ${val.title}"></a>
       ` : ''}
       <div class="project-content">
         <div class="project-header">
-           <h3 class="project-title">${val.title}</h3>
+           <h3 class="project-title">${val.title}${val.projectUrl ? ` <span class="link-arrow">↗</span>` : ''}</h3>
            ${val.year ? `<span class="project-year">${val.year}</span>` : ''}
            <div class="status-badge ${statusConfig.class}">
              <span class="status-dot"></span>
@@ -432,11 +467,11 @@ class ProjectArticle extends HTMLElement {
 
           <div class="architecture-view">
              <ul class="arch-list">
-                <li><strong>Frontend:</strong> Angular v17+ / Electron</li>
-                <li><strong>Backend:</strong> Java Spring Boot (BFF & API)</li>
-                <li><strong>Services:</strong> Media Gateway, User Gateway</li>
-                <li><strong>Messaging:</strong> Apache Kafka (Event-driven)</li>
-                <li><strong>Storage:</strong> PostgreSQL / S3</li>
+                 <li><strong>Frontend:</strong> Angular / Electron</li>
+                 <li><strong>BFF Layers:</strong> Spring Boot BFFs with Redis Cache</li>
+                 <li><strong>Services:</strong> user/media data gateways</li>
+                 <li><strong>Integration:</strong> gRPC & Kafka Event Stream</li>
+                 <li><strong>Database:</strong> PostgreSQL Database</li>
                 <li><strong>DevOps:</strong> Docker / GitHub Actions</li>
                 <li><strong>Perf:</strong> Hyperlight SSG & Aggressive Inlining</li>
              </ul>
@@ -466,10 +501,10 @@ class ProjectArticle extends HTMLElement {
          <img src="${val.imgUrl}" alt="${val.title}" class="${lazyLoading ? 'lazy-img' : ''}">
          ${isGolden && !this._isArchitectureView ? `
             <div class="mini-player-overlay">
-               <div class="play-icon"></div>
-               <span class="stream-text">8K Stream Ready</span>
-            </div>
-         ` : ''}
+            <!--<div class="play-icon"></div>
+            <span class="stream-text">8K Stream Ready</span>-->
+         </div>
+            ` : ''}
       </div>
     </article>
     <style>
@@ -562,6 +597,20 @@ class ProjectArticle extends HTMLElement {
         font-size: 36px;
         color: var(--text-primary);
         margin: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .link-arrow {
+        color: var(--primary-color);
+        font-size: 24px;
+        opacity: 0.5;
+        display: inline-block;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+      .project-card:hover .link-arrow {
+        transform: translate(3px, -3px);
+        opacity: 1;
       }
       .project-year {
         font-size: 14px;
@@ -595,6 +644,7 @@ class ProjectArticle extends HTMLElement {
       .sunset .status-dot { background-color: #ff9500; box-shadow: 0 0 8px #ff9500; }
       .private .status-dot { background-color: #007aff; box-shadow: 0 0 8px #007aff; }
       .showcase .status-dot { background-color: #af52de; box-shadow: 0 0 8px #af52de; }
+      .progress .status-dot { background-color: #ffcc00; box-shadow: 0 0 8px #ffcc00; }
 
       .badge {
         background: var(--accent-color);
@@ -975,23 +1025,54 @@ window.customElements.define("experience-article", ExperienceArticle);
       chatModal.classList.remove('show');
     });
 
-    const addMessage = (text, sender) => {
+    const addMessage = (text, sender, isLoading = false) => {
       const msg = document.createElement('div');
       msg.classList.add('chat-message', sender);
-      msg.textContent = text;
+      if (isLoading) {
+        msg.classList.add('loading');
+        msg.innerHTML = `<div class="loading-dots"><span></span><span></span><span></span></div>`;
+      } else {
+        // Regex to detect URLs
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        text = simpleMarkdownParser(text);
+        msg.innerHTML = text.replace(urlRegex, (url) => `<a href="${url}" target="_blank" rel="noopener">${url}</a>`);
+
+
+      }
       chatMessages.appendChild(msg);
       chatMessages.scrollTop = chatMessages.scrollHeight;
+      return msg;
     };
 
-    const handleSend = () => {
+    const handleSend = async () => {
       const text = chatInput.value.trim();
       if (text) {
         addMessage(text, 'user');
         chatInput.value = '';
         trackEvent('chat_message_sent');
-        setTimeout(() => {
-          addMessage("I've received your message! I'll get back to you soon.", 'bot');
-        }, 1000);
+
+        const loadingMsg = addMessage('', 'bot', true);
+
+        try {
+          const response = await fetch(`http://127.0.0.1:7003/chat/owner`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: text })
+          });
+          const data = await response.json();
+          chatMessages.removeChild(loadingMsg);
+          if (data && data.final_answer) {
+            addMessage(data.final_answer, 'bot');
+          } else {
+            addMessage("I've received your message! I'll get back to you soon.", 'bot');
+          }
+        } catch (error) {
+          console.error("Chat Error:", error);
+          chatMessages.removeChild(loadingMsg);
+          addMessage("Oops! Something went wrong. Please try again later.", 'bot');
+        }
       }
     };
 
@@ -1004,6 +1085,21 @@ window.customElements.define("experience-article", ExperienceArticle);
         if (e.key === 'Enter') handleSend();
       });
     }
+
+    fetch('http://localhost:7003/health')
+      .then(response => {
+        // Check if the request was successful
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json(); // Parse the response as JSON
+      })
+      .then(data => {
+        console.log(data); // Work with your data here
+      })
+      .catch(error => {
+        console.error('Fetch error:', error);
+      });
 
     quickReplies.forEach(btn => {
       btn.addEventListener('click', () => {
