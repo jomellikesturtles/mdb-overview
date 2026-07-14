@@ -26,8 +26,8 @@
   <link rel="canonical" href="https://jommelsaligumba.github.io/">
 
   <!-- Favicons -->
-  <link rel="icon" type="image/x-icon" href="./assets/plex.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="./assets/plex-icon.png">
+  <link rel="icon" type="image/x-icon" href="./assets/mdb.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/mdb.png">
 
   <!-- Preload critical assets -->
   <link rel="preload" href="./styles.css" as="style">
@@ -40,7 +40,7 @@
 
   <!-- Umami Analytics -->
   <!-- <script defer src="http://localhost:3000/script.js" data-website-id="08e55e14-8ffe-4abf-9edc-0b1aca528be0"></script> -->
-  <script defer src="https://cloud.umami.is/script.js" data-website-id="c02191cc-0c16-42a2-81bd-ca90f50846bf"></script>
+  <!-- <script defer src="https://cloud.umami.is/script.js" data-website-id="c02191cc-0c16-42a2-81bd-ca90f50846bf"></script> -->
 </head>
 
 <body>
@@ -594,11 +594,11 @@
 
         <div class="prof-timeline fade-in-on-scroll">
           <!-- Sabbatical -->
-          <experience-article article='{
+          <!-- <experience-article article='{
               "date": "2026 - Present",
               "title": "Strategic Sabbatical & Independent Research",
               "description": "Taking a purposeful break to focus on AI-assisted development research, deep-diving into LLM orchestration, and contributing to the MDB ecosystem modernization."
-           }'></experience-article>
+           }'></experience-article> -->
           <!-- Job 3 (Latest) -->
           <experience-article article='{
               "date": "2025 - 2026",
@@ -642,14 +642,14 @@
           <!-- The Golden Project: MDB -->
           <project-article id="project-article" aria-label="MDB" data-feature="mdbProject" article='{
               "isGolden": true,
-              "status": "showcase",
+              "status": "progress",
               "year": "2019 - Present",
-              "techStacks": ["angular", "spring", "docker", "postgres", "rest-api", "microservices"],
+              "techStacks": ["angular", "spring", "docker", "postgres", "rest-api", "microservices", "redis", "kafka", "aiops"],
               "title": "MDB (Media Data Base)",
-              "description": "An event-driven media ecosystem designed for extreme performance. Features a distributed microservices architecture using Kafka for seamless inter-service communication, a high-performance Angular/Electron frontend, and robust Spring Boot backends (API & BFF). Engineered with Hyperlight principles and automated DevOps pipelines.",
-              "imgUrl":"assets/laptop-with-code.jpg",
+              "description": "A high-performance media ecosystem designed for extreme scalability. Features a distributed microservices architecture orchestrated with Spring Boot and REST APIs, a high-performance Angular/Electron frontend, and automated DevOps pipelines.",
+              "imgUrl":"assets/mdb-dashboard-screen.png",
               "deployCmd": "docker-compose up -d",
-              "projectUrl": "https://google.com",
+              "projectUrl": "./mdb.html",
               "githubUrl": "https://github.com/jomellikesturtles/mdb-platform"}'></project-article>
 
           <project-article id="project-article" aria-label="DENR" article='{
