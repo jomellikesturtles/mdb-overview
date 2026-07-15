@@ -38,8 +38,10 @@ jobs:
       - name: Minify CSS
         run: cleancss -o output/styles.css vanilla-portfolio/styles.css
 
-      - name: Minify JS ()
-        run: terser vanilla-portfolio/script.js --compress --mangle -o output/script.js
+      - name: Minify JS
+        run: |
+          terser vanilla-portfolio/script.js --compress --mangle -o output/script.js
+          terser vanilla-portfolio/features.js --compress --mangle -o output/features.js
 
       - name: Copy root files
         run: cp vanilla-portfolio/favicon.ico output/ 2>/dev/null || true
@@ -103,6 +105,7 @@ jobs:
           html-minifier-terser --collapse-whitespace --remove-comments --minify-js true --minify-css true -o output/index.html vanilla-portfolio/index.html
           cleancss -o output/styles.css vanilla-portfolio/styles.css
           terser vanilla-portfolio/script.js --compress --mangle -o output/script.js
+          terser vanilla-portfolio/features.js --compress --mangle -o output/features.js
           cp vanilla-portfolio/footer.js output/ 2>/dev/null || true
 
       - name: Checkout Target (mdb-platform)
