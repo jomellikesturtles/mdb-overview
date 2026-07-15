@@ -1,3 +1,4 @@
+const pageLoadTime = performance.now();
 var lazyLoading = false
 var tracking_feature = false
 
@@ -21,19 +22,28 @@ function simpleMarkdownParser(text) {
 window.addEventListener("load", () => {
   // Feature Toggle Configuration
   const FEATURES = {
-    mdbProject: true,
-    chat: false,
-    lighthouseBadge: false,
-    blueprint: false,
-    workflow: false,
-    technologies: false,
-    tracking: true,
-    spotlight: false,
-    lazyLoading: false,
-    download: true
+    mdbProject: isFeatureEnabled('mdbProject'),
+    chat: isFeatureEnabled('chat'),
+    lighthouseBadge: isFeatureEnabled('lighthouseBadge'),
+    blueprint: isFeatureEnabled('blueprint'),
+    workflow: isFeatureEnabled('workflow'),
+    technologies: isFeatureEnabled('technologies'),
+    tracking: isFeatureEnabled('tracking'),
+    spotlight: isFeatureEnabled('spotlight'),
+    lazyLoading: isFeatureEnabled('lazyLoading'),
+    download: isFeatureEnabled('download')
   };
   lazyLoading = FEATURES.lazyLoading;
   tracking_feature = FEATURES.tracking;
+
+  if (tracking_feature) {
+    // 1. Dynamic Umami Script Injection
+    const script = document.createElement('script');
+    script.defer = true;
+    script.src = 'https://cloud.umami.is/script.js';
+    script.setAttribute('data-website-id', 'c02191cc-0c16-42a2-81bd-ca90f50846bf');
+    document.head.appendChild(script);
+  }
 
   const spotlight = document.getElementById('cursor-spotlight');
   if (FEATURES.spotlight) {
@@ -70,16 +80,8 @@ window.addEventListener("load", () => {
 
   // Apply Feature Toggles (including URL parameter overrides)
   const applyFeatureToggles = () => {
-    const params = new URLSearchParams(window.location.search);
-
     // Process each toggle
     Object.keys(FEATURES).forEach(key => {
-      // Check URL for overrides (e.g., ?feature:chat=false)
-      const urlOverride = params.get(`feature:${key}`);
-      if (urlOverride !== null) {
-        FEATURES[key] = urlOverride === 'true';
-      }
-
       // If feature is disabled, hide all matching elements
       if (!FEATURES[key]) {
         const elements = document.querySelectorAll(`[data-feature="${key}"]`);
@@ -177,7 +179,8 @@ window.addEventListener("load", () => {
     [25, 50, 75, 100].forEach(milestone => {
       if (scrollPercent >= milestone && !milestonesTracked[milestone]) {
         milestonesTracked[milestone] = true;
-        trackEvent('scroll_milestone', { percent: milestone });
+        const seconds = Math.round((performance.now() - pageLoadTime) / 1000);
+        trackEvent('scroll_milestone', { percent: milestone, duration_seconds: seconds });
       }
     });
   });
