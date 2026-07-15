@@ -41,7 +41,7 @@
   padding: 0;
 }
 
-button:focus-visible, 
+button:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
@@ -801,13 +801,12 @@ a:hover {
   gap: 40px;
   align-items: center;
   text-align: center;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .education-card:hover {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(41, 151, 255, 0.4);
-  transform: translateY(-5px);
+
 }
 
 @media (min-width: 768px) {
@@ -983,9 +982,9 @@ input {
 .fade-in-on-scroll {
   opacity: 0;
   /* transform: translateY(30px); */
-  transition:
+  /* transition:
     opacity 1s ease,
-    transform 1s ease;
+    transform 1s ease; */
 }
 
 .is-visible {

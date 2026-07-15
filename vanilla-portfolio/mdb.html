@@ -8,8 +8,11 @@
   <meta name="description" content="MDB (Media Data Base) - High-performance media ecosystem. Features a distributed microservices architecture orchestrated with Spring Boot and REST APIs.">
   <title>MDB (Media Data Base) | Project Details</title>
 
-  <link rel="icon" type="image/x-icon" href="./assets/plex.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="./assets/plex-icon.png">
+  <link rel="icon" type="image/x-icon" href="./assets/mdb.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/mdb.png">
+
+  <!-- Shared Feature Toggles -->
+  <script src="features.js"></script>
 
   <!-- Umami Analytics -->
   <!-- <script defer src="https://cloud.umami.is/script.js" data-website-id="c02191cc-0c16-42a2-81bd-ca90f50846bf"></script> -->
@@ -151,6 +154,38 @@
       position: relative;
     }
 
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 720px;
+    }
+
+    .hero-bg-overlay {
+      position: absolute;
+      top: 50%;
+      right: -25%;
+      transform: translateY(-50%);
+      width: 800px;
+      height: 400px;
+      background-image: url('assets/mdb-removebg.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center right;
+      opacity: 1;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @media (max-width: 800px) {
+      .hero-bg-overlay {
+        top: 60%;
+        width: 300px;
+        height: 300px;
+        opacity: 0.03;
+        right: -20px;
+      }
+    }
+
     .hero-meta {
       display: flex;
       align-items: center;
@@ -169,20 +204,23 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 500;
-      background-color: rgba(41, 151, 255, 0.1);
-      color: var(--primary-color);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .status-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background-color: var(--primary-color);
-      box-shadow: 0 0 8px var(--primary-color);
+      background-color: #ffcc00;
+      box-shadow: 0 0 8px #ffcc00;
     }
 
     .title-gradient {
@@ -551,48 +589,172 @@
       padding-bottom: 40px;
     }
 
-    /* Screen Showcase Grid */
-    .screens-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 30px;
-      margin-top: 25px;
+    /* Apple Gallery Section (No Card) */
+    .gallery-section {
+      margin-bottom: 80px;
+      position: relative;
     }
 
-    @media (min-width: 768px) {
-      .screens-grid {
-        grid-template-columns: 1fr 1fr;
+    .gallery-header {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto 30px auto;
+      padding: 0 20px;
+    }
+
+    .gallery-title {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff 0%, #a1a1a6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .gallery-intro {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Apple-style Subsection Photo Gallery Showcase */
+    .photo-gallery-wrapper {
+      position: relative;
+      width: 100vw;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      overflow: hidden;
+    }
+
+    .gallery-container {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      gap: 30px;
+      padding-top: 20px;
+      padding-bottom: 40px;
+      padding-left: max(20px, calc((100vw - var(--max-width)) / 2 + 20px));
+      padding-right: max(20px, calc((100vw - var(--max-width)) / 2 + 20px));
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .gallery-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .gallery-item {
+      flex: 0 0 85%;
+      scroll-snap-align: center;
+      position: relative;
+      border-radius: 28px;
+      overflow: hidden;
+      /* background-color: #161617; */
+      /* border: 1px solid rgba(255, 255, 255, 0.08); */
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+      /* transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s ease; */
+    }
+
+    @media (min-width: 1000px) {
+      .gallery-item {
+        flex: 0 0 800px;
       }
     }
 
-    .screen-item {
-      background-color: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      overflow: hidden;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .screen-item:hover {
-      transform: translateY(-5px);
-      border-color: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-    }
-
-    .screen-img {
+    .gallery-img-wrapper {
+      position: relative;
       width: 100%;
-      height: auto;
-      display: block;
-      border-bottom: 1px solid var(--border-color);
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      border-radius: 28px;
     }
 
-    .screen-caption {
-      padding: 15px;
-      font-size: 13px;
-      font-weight: 500;
+    .gallery-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .gallery-caption {
+      padding: 24px 32px;
+      /* background: linear-gradient(to top, rgba(22, 22, 23, 0.95) 0%, rgba(22, 22, 23, 0.8) 100%); */
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+    }
+
+    .gallery-caption-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .gallery-caption-desc {
+      font-size: 14px;
       color: var(--text-secondary);
-      text-align: center;
-      background-color: rgba(0, 0, 0, 0.2);
+      line-height: 1.5;
+    }
+
+    .gallery-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+      margin-top: 20px;
+    }
+
+    .gallery-nav-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s, border-color 0.3s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      user-select: none;
+    }
+
+    .gallery-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: scale(1.05);
+    }
+
+    .gallery-nav-btn:active {
+      transform: scale(0.95);
+    }
+
+    .gallery-indicators {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .indicator-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .indicator-dot.active {
+      background-color: #ffffff;
+      transform: scale(1.2);
     }
 
     /* CI/CD Pipeline styles */
@@ -1004,65 +1166,68 @@
   <!-- Main Content Container -->
   <main class="container">
     <section class="hero">
-      <div class="hero-meta">
-        <span class="year-badge">2019 - Present</span>
-        <div class="status-badge">
-          <span class="status-dot"></span>
-          Active Showcase
+      <div class="hero-bg-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-meta">
+          <span class="year-badge">2019 - Present</span>
+          <div class="status-badge">
+            <span class="status-dot"></span>
+            In Progress
+          </div>
         </div>
-      </div>
-      <h1 class="title-gradient">MDB (Media Data Base)</h1>
-      <p class="lead-text">
-        An enterprise-grade media management engine designed to eliminate operational overhead and processing bottlenecks. Built on a distributed microservices architecture, MDB empowers engineering teams to process high-throughput media assets 5x faster with zero human intervention during system alerts.
-      </p>
+        <h1 class="title-gradient">MDB (Media Data Base)</h1>
+        <p class="lead-text">
+          A feature-rich desktop application for browsing, tracking, and watching movies. Built with **Angular** and **Electron**, it offers a modern user interface to manage your personal media library, discover new titles via various APIs (OMDb, TMDb), and even stream content.
+        </p>
 
-      <div class="tech-stack">
-        <span class="tech-tag">
-          <svg class="tech-icon"><use xlink:href="#angular"></use></svg>
-          Angular
-        </span>
-        <span class="tech-tag">
-          <svg class="tech-icon"><use xlink:href="#spring"></use></svg>
-          Spring Boot
-        </span>
-        <span class="tech-tag">
-          <svg class="tech-icon"><use xlink:href="#docker"></use></svg>
-          Docker
-        </span>
-        <span class="tech-tag">
-          <svg class="tech-icon"><use xlink:href="#postgres"></use></svg>
-          PostgreSQL
-        </span>
-        <span class="tech-tag">
-          <svg class="tech-icon"><use xlink:href="#rest-api"></use></svg>
-          REST API
-        </span>
-        <span class="tech-tag">
-          <svg class="tech-icon"><use xlink:href="#microservices"></use></svg>
-          Microservices
-        </span>
-        <span class="tech-tag">
-          <svg class="tech-icon"><use xlink:href="#redis"></use></svg>
-          Redis
-        </span>
-        <span class="tech-tag">
-          <svg class="tech-icon"><use xlink:href="#kafka"></use></svg>
-          Apache Kafka
-        </span>
-        <span class="tech-tag">
-          <svg class="tech-icon"><use xlink:href="#aiops"></use></svg>
-          AIOps / RAG
-        </span>
-      </div>
+        <div class="tech-stack">
+          <span class="tech-tag">
+            <svg class="tech-icon"><use xlink:href="#angular"></use></svg>
+            Angular
+          </span>
+          <span class="tech-tag">
+            <svg class="tech-icon"><use xlink:href="#spring"></use></svg>
+            Spring Boot
+          </span>
+          <span class="tech-tag">
+            <svg class="tech-icon"><use xlink:href="#docker"></use></svg>
+            Docker
+          </span>
+          <span class="tech-tag">
+            <svg class="tech-icon"><use xlink:href="#postgres"></use></svg>
+            PostgreSQL
+          </span>
+          <span class="tech-tag">
+            <svg class="tech-icon"><use xlink:href="#rest-api"></use></svg>
+            REST API
+          </span>
+          <span class="tech-tag">
+            <svg class="tech-icon"><use xlink:href="#microservices"></use></svg>
+            Microservices
+          </span>
+          <span class="tech-tag">
+            <svg class="tech-icon"><use xlink:href="#redis"></use></svg>
+            Redis
+          </span>
+          <span class="tech-tag">
+            <svg class="tech-icon"><use xlink:href="#kafka"></use></svg>
+            Apache Kafka
+          </span>
+          <span class="tech-tag">
+            <svg class="tech-icon"><use xlink:href="#aiops"></use></svg>
+            AIOps / RAG
+          </span>
+        </div>
 
-      <div class="actions-bar">
-        <a id="download-button" class="btn btn-primary" style="display: none;">
-          <svg class="btn-icon-svg" viewBox="0 0 24 24"><path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" /></svg>
-          Download Desktop Client
-        </a>
-        <a href="https://github.com/jomellikesturtles/mdb-platform" target="_blank" rel="noopener" class="btn btn-secondary">
-          View Repository &rarr;
-        </a>
+        <div class="actions-bar">
+          <a id="download-button" class="btn btn-primary" style="display: none;">
+            <svg class="btn-icon-svg" viewBox="0 0 24 24"><path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" /></svg>
+            Download Desktop Client
+          </a>
+          <a href="https://github.com/jomellikesturtles/mdb-platform" target="_blank" rel="noopener" class="btn btn-secondary">
+            View Repository &rarr;
+          </a>
+        </div>
       </div>
     </section>
 
@@ -1215,7 +1380,7 @@
     </section>
 
     <!-- CI/CD Section -->
-    <section class="arch-card">
+    <section class="arch-card" data-feature="workflow">
       <h2 class="card-title">Continuous Integration & Delivery</h2>
       <p class="paragraph">
         Every commit to the main branch triggers automated quality gates, security scans, and containerized packaging, concluding in zero-downtime rolling deployments to the staging and production clusters.
@@ -1385,21 +1550,55 @@ DEBUG: Round 10 -> Calling create_pull_request
       </div>
     </section>
 
-    <!-- Application Interface Showcase -->
-    <section class="arch-card">
-      <h2 class="card-title">Application Interface</h2>
-      <p class="paragraph">
-        Visual interface of the MDB platform. The application is designed for optimized, low-latency navigation across large-scale media assets and comprehensive metadata structures.
-      </p>
+    <!-- Application Interface Showcase (Apple Style) -->
+    <section class="gallery-section">
+      <div class="gallery-header">
+        <h2 class="gallery-title">Application Interface</h2>
+        <p class="gallery-intro">
+          Visual interface of the MDB platform. Designed for optimized, low-latency navigation across large-scale media assets and comprehensive metadata structures.
+        </p>
+      </div>
 
-      <div class="screens-grid">
-        <div class="screen-item">
-          <img src="assets/mdb-dashboard-screen.png" alt="MDB Curation Dashboard" class="screen-img">
-          <div class="screen-caption">Media Curation Dashboard</div>
+      <div class="photo-gallery-wrapper">
+        <!-- Gallery Items Scroller -->
+        <div class="gallery-container" id="gallery-scroller">
+          <div class="gallery-item">
+            <div class="gallery-img-wrapper">
+              <img src="assets/mdb-dashboard-screen.png" alt="MDB Curation Dashboard" class="gallery-img">
+            </div>
+            <div class="gallery-caption">
+              <div class="gallery-caption-title">Media  Dashboard</div>
+              <div class="gallery-caption-desc">Search and browse detailed information about movies and people using TMDb and OMDb APIs.
+              </div>
+            </div>
+          </div>
+
+          <div class="gallery-item">
+            <div class="gallery-img-wrapper">
+              <img src="assets/mdb-movie-details-screen.png" alt="MDB Deep Inspection Console" class="gallery-img">
+            </div>
+            <div class="gallery-caption">
+              <div class="gallery-caption-title">Media Detail</div>
+              <div class="gallery-caption-desc">Built-in video player with subtitle support, Web Audio API volume boosting (up to 200%), drag-and-drop subtitle loader (.srt)</div>
+            </div>
+          </div>
         </div>
-        <div class="screen-item">
-          <img src="assets/mdb-movie-details-screen.png" alt="MDB Media Detail Inspection" class="screen-img">
-          <div class="screen-caption">Deep Media Detail Inspection</div>
+
+        <!-- Gallery Controls (Arrows + Indicators) -->
+        <div class="gallery-controls">
+          <button class="gallery-nav-btn prev" id="gallery-prev" aria-label="Previous image">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+
+          <div class="gallery-indicators" id="gallery-indicators-container">
+            <span class="indicator-dot active" data-index="0"></span>
+            <span class="indicator-dot" data-index="1"></span>
+            <span class="indicator-dot" data-index="2"></span>
+          </div>
+
+          <button class="gallery-nav-btn next" id="gallery-next" aria-label="Next image">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
         </div>
       </div>
     </section>
@@ -1514,11 +1713,27 @@ DEBUG: Round 10 -> Calling create_pull_request
   </main>
 
   <script>
-    // Spotlight movement
-    document.addEventListener('mousemove', e => {
-      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
-      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
-    });
+    const pageLoadTime = performance.now();
+
+    const FEATURES = {
+      mdbProject: isFeatureEnabled('mdbProject'),
+      chat: isFeatureEnabled('chat'),
+      lighthouseBadge: isFeatureEnabled('lighthouseBadge'),
+      blueprint: isFeatureEnabled('blueprint'),
+      workflow: isFeatureEnabled('workflow'),
+      technologies: isFeatureEnabled('technologies'),
+      tracking: isFeatureEnabled('tracking'),
+      spotlight: isFeatureEnabled('spotlight'),
+      lazyLoading: isFeatureEnabled('lazyLoading'),
+      download: isFeatureEnabled('download')
+    };
+
+    if (FEATURES.spotlight) {
+      document.addEventListener('mousemove', e => {
+        document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+        document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+      });
+    }
 
     // Copy to clipboard logic
     const copyBtn = document.getElementById('copy-btn');
@@ -1623,21 +1838,6 @@ DEBUG: Round 10 -> Calling create_pull_request
       }, 1200);
     };
 
-    // TODO: use common .json config or .js config
-    // Feature Toggle Configuration
-    const FEATURES = {
-      mdbProject: true,
-      chat: false,
-      lighthouseBadge: false,
-      blueprint: false,
-      workflow: false,
-      technologies: false,
-      tracking: true,
-      spotlight: false,
-      lazyLoading: false,
-      download: true
-    };
-
     const isDownloadEnabled = FEATURES.download;
 
     const userAgent = window.navigator.userAgent;
@@ -1666,6 +1866,16 @@ DEBUG: Round 10 -> Calling create_pull_request
     if (chatContainer && !isChatEnabled) {
       chatContainer.style.display = 'none';
     }
+
+    // Apply General Feature Toggles (hides any elements with data-feature="[disabled_key]")
+    Object.keys(FEATURES).forEach(key => {
+      if (!FEATURES[key]) {
+        const elements = document.querySelectorAll(`[data-feature="${key}"]`);
+        elements.forEach(el => {
+          el.style.display = 'none';
+        });
+      }
+    });
 
     // Analytics Feature Toggle & Tracking Code
     const isTrackingEnabled = FEATURES.tracking;
@@ -1746,7 +1956,7 @@ DEBUG: Round 10 -> Calling create_pull_request
         });
       }, { threshold: 0.3 });
 
-      document.querySelectorAll('section[id], section.card, section.arch-card').forEach(section => {
+      document.querySelectorAll('section[id], section.card, section.arch-card, section.gallery-section').forEach(section => {
         sectionObserver.observe(section);
       });
     };
@@ -1762,10 +1972,55 @@ DEBUG: Round 10 -> Calling create_pull_request
       [25, 50, 75, 100].forEach(milestone => {
         if (scrollPercent >= milestone && !milestonesTracked[milestone]) {
           milestonesTracked[milestone] = true;
-          window.trackEvent('scroll_milestone', { percent: milestone });
+          const seconds = Math.round((performance.now() - pageLoadTime) / 1000);
+          window.trackEvent('scroll_milestone', { percent: milestone, duration_seconds: seconds });
         }
       });
     });
+
+    // 5. Apple-style Photo Gallery Interactive Logic
+    const scroller = document.getElementById('gallery-scroller');
+    const prevBtn = document.getElementById('gallery-prev');
+    const nextBtn = document.getElementById('gallery-next');
+    const dots = document.querySelectorAll('#gallery-indicators-container .indicator-dot');
+
+    if (scroller && prevBtn && nextBtn) {
+      const getScrollStep = () => {
+        const item = scroller.querySelector('.gallery-item');
+        return item ? item.offsetWidth + 30 : 300;
+      };
+
+      prevBtn.addEventListener('click', () => {
+        scroller.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
+      });
+
+      nextBtn.addEventListener('click', () => {
+        scroller.scrollBy({ left: getScrollStep(), behavior: 'smooth' });
+      });
+
+      // Update active bullet dot on scroll
+      scroller.addEventListener('scroll', () => {
+        const scrollPos = scroller.scrollLeft;
+        const itemWidth = getScrollStep();
+        const activeIndex = Math.round(scrollPos / itemWidth);
+
+        dots.forEach((dot, index) => {
+          if (index === activeIndex) {
+            dot.classList.add('active');
+          } else {
+            dot.classList.remove('active');
+          }
+        });
+      });
+
+      // Click dots to scroll to item
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+          const itemWidth = getScrollStep();
+          scroller.scrollTo({ left: index * itemWidth, behavior: 'smooth' });
+        });
+      });
+    }
   </script>
 </body>
 
