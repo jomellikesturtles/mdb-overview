@@ -1089,7 +1089,8 @@ window.customElements.define("experience-article", ExperienceArticle);
       });
     }
 
-    fetch('http://localhost:7003/health')
+    if (FEATURES.chat) {
+      fetch('http://localhost:7003/health')
       .then(response => {
         // Check if the request was successful
         if (!response.ok) {
@@ -1103,6 +1104,7 @@ window.customElements.define("experience-article", ExperienceArticle);
       .catch(error => {
         console.error('Fetch error:', error);
       });
+    }
 
     quickReplies.forEach(btn => {
       btn.addEventListener('click', () => {
