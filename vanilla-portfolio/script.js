@@ -41,7 +41,7 @@ window.addEventListener("load", () => {
     const script = document.createElement('script');
     script.defer = true;
     script.src = 'https://cloud.umami.is/script.js';
-    script.setAttribute('data-website-id', 'c02191cc-0c16-42a2-81bd-ca90f50846bf');
+    script.setAttribute('data-website-id', '6ae06870-f0c7-43d6-9241-126542baf989');
     document.head.appendChild(script);
   }
 
@@ -1089,7 +1089,8 @@ window.customElements.define("experience-article", ExperienceArticle);
       });
     }
 
-    fetch('http://localhost:7003/health')
+    if (FEATURES.chat) {
+      fetch('http://localhost:7003/health')
       .then(response => {
         // Check if the request was successful
         if (!response.ok) {
@@ -1103,6 +1104,7 @@ window.customElements.define("experience-article", ExperienceArticle);
       .catch(error => {
         console.error('Fetch error:', error);
       });
+    }
 
     quickReplies.forEach(btn => {
       btn.addEventListener('click', () => {
