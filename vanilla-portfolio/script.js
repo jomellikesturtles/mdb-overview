@@ -41,7 +41,7 @@ window.addEventListener("load", () => {
     const script = document.createElement('script');
     script.defer = true;
     script.src = 'https://cloud.umami.is/script.js';
-    script.setAttribute('data-website-id', 'c02191cc-0c16-42a2-81bd-ca90f50846bf');
+    script.setAttribute('data-website-id', '6ae06870-f0c7-43d6-9241-126542baf989');
     document.head.appendChild(script);
   }
 
