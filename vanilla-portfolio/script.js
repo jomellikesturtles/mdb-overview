@@ -940,6 +940,10 @@ class ExperienceArticle extends HTMLElement {
   }
 
   set article(val) {
+    const descContent = Array.isArray(val.description)
+      ? `<ul>${val.description.map(item => `<li>${item}</li>`).join('')}</ul>`
+      : `<p>${val.description}</p>`;
+
     this.shadowRoot.innerHTML = `
     <link rel="stylesheet" href="styles.css">
     <div class="prof-timeline-item">
@@ -947,7 +951,7 @@ class ExperienceArticle extends HTMLElement {
       <div class="prof-timeline-content">
           <span class="prof-date">${val.date}</span>
           <h3 class="prof-title">${val.title}</h3>
-          <p class="prof-desc">${val.description}</p>
+          <div class="prof-desc">${descContent}</div>
       </div>
     </div>
     <style>
@@ -988,6 +992,22 @@ class ExperienceArticle extends HTMLElement {
         color: var(--text-secondary, #86868b);
         line-height: 1.5;
         max-width: 800px;
+      }
+      .prof-desc p {
+        margin: 0;
+      }
+      .prof-desc ul {
+        margin: 10px 0;
+        padding-left: 20px;
+        list-style-type: disc;
+      }
+      .prof-desc li {
+        margin-bottom: 8px;
+        line-height: 1.6;
+        color: var(--text-secondary, #86868b);
+      }
+      .prof-desc li::marker {
+        color: var(--accent-color, #2997ff);
       }
     </style>
     `;
