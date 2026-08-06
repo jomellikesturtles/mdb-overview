@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engineering Blog | Jommel Saligumba</title>
+  <meta name="description" content="Thoughts on modern architectures, performance budgets, and systems resilience.">
+  <link rel="icon" type="image/x-icon" href="./assets/mdb.ico">
+  <link rel="preload" href="./styles.css" as="style">
+  <link rel="preload" href="./script.js" as="script">
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    .blog-container {
+      max-width: var(--max-width, 1200px);
+      margin: 120px auto 60px auto;
+      padding: 0 20px;
+    }
+    .blog-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+    .blog-headline {
+      font-size: clamp(2.5rem, 2rem + 2.5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+    .blog-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+    .active {
+      color: var(--accent-color) !important;
+      font-weight: 600;
+    }
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body class="dark-theme">
+  <!-- Semantic Main Wrapper -->
+  <main id="main-content">
+    <!-- Sticky Nav -->
+    <nav class="global-nav">
+      <div class="nav-content">
+        <a href="index.html" class="nav-logo">JS</a>
+        <ul class="nav-list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#projects">Projects</a></li>
+          <li><a href="blog.html" class="active">Blog</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main blog section container -->
+    <div class="blog-container">
+      <header class="blog-header">
+        <h1 class="blog-headline">The Engineering Log.</h1>
+        <p class="blog-subtitle">Thoughts on modern architectures, performance budgets, and systems resilience.</p>
+      </header>
+
+      <!-- Dynamic Routing Blog App -->
+      <blog-app></blog-app>
+    </div>
+  </main>
+
+  <script src="./features.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
