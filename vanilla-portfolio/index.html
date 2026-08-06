@@ -459,8 +459,9 @@
           <li><a href="#about">About</a></li>
           <li><a href="#experience">Experience</a></li>
           <li><a href="#projects">Projects</a></li>
-          <li><a href="#tech">Tech</a></li>
+          <!-- <li><a href="#tech">Tech</a></li> -->
           <li><a href="#education">Education</a></li>
+          <li data-feature="blog"><a href="blog.html">Blog</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </div>
@@ -968,18 +969,31 @@
     <div class="chat-modal-header">
       <button class="chat-close" id="chat-close">&times;</button>
     </div>
-    <div class="chat-profile" style="justify-content: center; margin: 24px auto;">
-      <div class="chat-avatar">JS</div>
+    <div class="chat-profile" style="display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 24px auto 16px auto;">
+      <div style="position: relative;">
+        <img class="chat-avatar" src="assets/about/avatar.png" alt="Jommel Saligumba" style="object-fit: cover; display: block;">
+        <span class="status-dot chat-status-dot" style="position: absolute; bottom: 2px; right: 2px; border: 2px solid #fff; width: 12px; height: 12px; background-color: #86868b;"></span>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-weight: 600; font-size: 16px; color: #1d1d1f; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          Jommel Saligumba
+          <span class="chat-badge-subtle">AI</span>
+        </div>
+        <div class="chat-status-text" style="font-size: 12px; color: #86868b; margin-top: 2px;">Software Engineer</div>
+      </div>
     </div>
     <div class="chat-modal-body" id="chat-messages" markdown="1">
       <div class="chat-message bot">
-        Hi! How can I help you today?
+        Hi!
       </div>
     </div>
     <div class="chat-modal-quick-replies">
-      <button class="quick-reply-btn" data-reply="projects">Show Projects</button>
-      <button class="quick-reply-btn" data-reply="stack">Tech Stack</button>
-      <button class="quick-reply-btn" data-reply="resume">Resume</button>
+      <button class="quick-reply-btn" data-reply="me" data-query="Who are you?">👤 Me</button>
+      <button class="quick-reply-btn" data-reply="projects" data-query="What projects have you worked on?">💼 Projects</button>
+      <button class="quick-reply-btn" data-reply="resume" data-query="Can I see your resume?">📄 Resume</button>
+      <button class="quick-reply-btn" data-reply="fun" data-query="What is the craziest thing you've done for fun.">🧗 Fun</button>
+      <button class="quick-reply-btn" data-reply="skills" data-query="What are your skills?">📊 Skills</button>
+      <button class="quick-reply-btn" data-reply="contact" data-query="How can I reach you?">✉️ Contact</button>
     </div>
     <div class="chat-modal-footer">
       <input type="text" id="chat-input" placeholder="Ask me anything..." autocomplete="off">
@@ -989,7 +1003,7 @@
         </svg>
       </button>
     </div>
-    <p>This chat is AI and can make mistakes.</p>
+    <p class="chat-disclaimer">Assistant ✨ AI-generated answers can be incorrect.</p>
   </div>
 
 </body>

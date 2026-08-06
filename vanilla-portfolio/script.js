@@ -1,12 +1,12 @@
 const pageLoadTime = performance.now();
 var lazyLoading = false
 var tracking_feature = false
-
+const BASE_API_URL = 'https://qnvezz6gmtw3vxwmc2oxvvgncy0jnxqg.lambda-url.ap-southeast-1.on.aws';
 function trackEvent(eventName, eventArgs) {
   if (window.umami && !!tracking_feature) {
     !!eventArgs ? umami.track(eventName, eventArgs) : umami.track(eventName)
   } else {
-    console.log("MOCK TRACKING: ", eventName, eventArgs)
+    console.log('[Mock Umami]', eventName, eventArgs);
   }
 }
 
@@ -31,8 +31,15 @@ window.addEventListener("load", () => {
     tracking: isFeatureEnabled('tracking'),
     spotlight: isFeatureEnabled('spotlight'),
     lazyLoading: isFeatureEnabled('lazyLoading'),
-    download: isFeatureEnabled('download')
+    download: isFeatureEnabled('download'),
+    blog: isFeatureEnabled('blog')
   };
+
+  if (window.location.pathname.includes('blog.html') && !FEATURES.blog) {
+    window.location.replace('index.html');
+    return;
+  }
+
   lazyLoading = FEATURES.lazyLoading;
   tracking_feature = FEATURES.tracking;
 
@@ -1021,10 +1028,282 @@ class ExperienceArticle extends HTMLElement {
   }
 }
 
+class BlogCard extends HTMLElement {
+  static get observedAttributes() {
+    return ["article"];
+  }
+
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+  }
+
+  set article(val) {
+    this.shadowRoot.innerHTML = `
+    <link rel="stylesheet" href="styles.css">
+    <a href="#${val.slug}" class="card-link">
+      <article class="blog-card">
+        <div class="card-image-wrapper">
+          <img src="${val.image}" alt="${val.title}">
+        </div>
+        <div class="card-content">
+          <div class="blog-meta">
+            <span class="blog-date">${val.date}</span>
+            <span class="blog-category">${val.category}</span>
+          </div>
+          <h2 class="blog-title">${val.title}</h2>
+        </div>
+      </article>
+    </a>
+    <style>
+      :host {
+        display: block;
+      }
+      .card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+      .blog-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        overflow: hidden;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .blog-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+      .card-image-wrapper {
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+      }
+      .card-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+      .blog-card:hover .card-image-wrapper img {
+        transform: scale(1.05);
+      }
+      .card-content {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+      .blog-meta {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 12px;
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .blog-date {
+        color: var(--text-secondary, #86868b);
+      }
+      .blog-category {
+        color: var(--accent-color, #2997ff);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .blog-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text-primary, #f5f5f7);
+        line-height: 1.4;
+        margin: 0;
+      }
+    </style>
+    `;
+  }
+
+  get article() {
+    return this.getAttribute("article");
+  }
+
+  attributeChangedCallback(attrName, oldVal, newVal) {
+    if (newVal) this.article = JSON.parse(newVal);
+  }
+}
+
+class BlogDetail extends HTMLElement {
+  static get observedAttributes() {
+    return ["article"];
+  }
+
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+  }
+
+  set article(val) {
+    this.shadowRoot.innerHTML = `
+    <link rel="stylesheet" href="styles.css">
+    <div class="blog-detail">
+      <a href="#" class="back-link">&larr; Back to Articles</a>
+      <div class="detail-hero">
+        <img src="${val.image}" alt="${val.title}">
+      </div>
+      <div class="blog-meta">
+        <span class="blog-date">${val.date}</span>
+        <span class="blog-category">${val.category}</span>
+      </div>
+      <h1 class="blog-title">${val.title}</h1>
+      <div class="blog-content">${val.content}</div>
+    </div>
+    <style>
+      :host {
+        display: block;
+      }
+      .blog-detail {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .back-link {
+        display: inline-block;
+        color: var(--accent-color, #2997ff);
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 30px;
+        transition: transform 0.2s;
+      }
+      .back-link:hover {
+        transform: translateX(-4px);
+      }
+      .detail-hero {
+        width: 100%;
+        height: 400px;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255,255,255,0.05);
+      }
+      .detail-hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .blog-meta {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .blog-date {
+        color: var(--text-secondary, #86868b);
+      }
+      .blog-category {
+        color: var(--accent-color, #2997ff);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .blog-title {
+        font-size: clamp(2rem, 1.5rem + 1.5vw, 2.75rem);
+        font-weight: 800;
+        color: var(--text-primary, #f5f5f7);
+        margin-bottom: 30px;
+        line-height: 1.2;
+      }
+      .blog-content {
+        font-size: 18px;
+        color: var(--text-secondary, #86868b);
+        line-height: 1.7;
+      }
+      .blog-content p {
+        margin-bottom: 20px;
+      }
+      .blog-content p:last-child {
+        margin-bottom: 0;
+      }
+      .blog-content img {
+        width: 100%;
+        max-height: 400px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin: 24px 0;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+    </style>
+    `;
+  }
+
+  get article() {
+    return this.getAttribute("article");
+  }
+
+  attributeChangedCallback(attrName, oldVal, newVal) {
+    if (newVal) this.article = JSON.parse(newVal);
+  }
+}
+
+class BlogApp extends HTMLElement {
+  connectedCallback() {
+    this.render();
+    this.hashHandler = () => this.render();
+    window.addEventListener('hashchange', this.hashHandler);
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('hashchange', this.hashHandler);
+  }
+
+  render() {
+    const slug = window.location.hash.slice(1);
+    const posts = [
+      {
+        slug: "legacy-evolution",
+        date: "August 4, 2026",
+        category: "Engineering Philosophy",
+        title: "Architecting the Future: Embracing legacy evolution without fear",
+        image: "assets/laptop-with-code.jpg",
+        content: "<p>Enterprise software systems are organic. Over years of rapid feature shipping and organizational pivots, even the cleanest design accumulates cruft. As a Senior Full-Stack Engineer, I have witnessed first-hand the dread that legacy systems can instill in development teams.</p><p>But legacy code isn\u0027t a failure; it\u0027s proof of survival. When migrating critical applications—like the core fintech tools I rewrote from Angular 5 to 17—the goal is never just to replace old code with new code. It is to capture the business intelligence baked into that legacy system and package it in a modern, resilient, high-performance architecture.</p><p>My engineering philosophy revolves around three core tenets: clean decoupling, observability first, and developer tooling automation. By setting up robust build pipelines, strict linting, and automated sanity gates, we enable teams to push changes to production with absolute confidence.</p>"
+      },
+      {
+        slug: "decoupling-strategy",
+        date: "July 15, 2026",
+        category: "System Design",
+        title: "The Decoupling Strategy: Event-driven workflows in enterprise platforms",
+        image: "assets/about/20240421_090514.webp",
+        content: "<p>When we built the MDB (Media Data Base) platform, our core performance bottleneck lay in media ingestion sync events blocking main thread database transactions. A typical video upload would stall standard REST controllers, causing memory leaks and network socket starvation under high load.</p><img src=\"assets/mdb-dashboard-screen.png\" alt=\"MDB Dashboard System\"><p>To solve this, we decoupled the architecture entirely. We designed a lightweight Gateway BFF acting as a high-availability entry-point, which forwards events to message brokers powered by Apache Kafka. Downstream worker nodes process the stream asynchronously, keeping database operations stateless and independent.</p><img src=\"assets/laptop-with-code.jpg\" alt=\"Developer Coding Interface\"><p>Choosing the right message serialization models (like gRPC protocol buffers over raw JSON) saved 40% of standard transport latency, proving that extreme optimization doesn\u0027t always mean rewriting code—it means redesigning how code talks to each other.</p><p>Beyond performance, decoupling enhances system observability. When a microservice undergoes maintenance, the message broker absorbs incoming payloads, ensuring zero downtime for client-facing interfaces. Scalability is no longer a theoretical goal; it is a built-in property of our network topology.</p>"
+      }
+    ];
+
+    if (slug) {
+      const post = posts.find(p => p.slug === slug);
+      if (post) {
+        this.innerHTML = `<blog-detail article='${JSON.stringify(post).replace(/'/g, "&apos;")}'></blog-detail>`;
+        window.scrollTo(0, 0);
+        return;
+      }
+    }
+
+    // List View
+    this.innerHTML = `
+      <div class="blog-grid">
+        ${posts.map(post => `<blog-card article='${JSON.stringify(post).replace(/'/g, "&apos;")}'></blog-card>`).join('')}
+      </div>
+    `;
+  }
+}
+
 // Define the custom elements
 window.customElements.define("stats-span", StatsSpan);
 window.customElements.define("project-article", ProjectArticle);
 window.customElements.define("experience-article", ExperienceArticle);
+window.customElements.define("blog-card", BlogCard);
+window.customElements.define("blog-detail", BlogDetail);
+window.customElements.define("blog-app", BlogApp);
 
 /* --- Chat Modal Logic --- */
 (function() {
@@ -1037,10 +1316,47 @@ window.customElements.define("experience-article", ExperienceArticle);
   const quickReplies = document.querySelectorAll('.quick-reply-btn');
 
   if (chatPill && chatModal) {
+    let currentInterval = 120000; // default 2 minutes
+    let healthTimeoutId = null;
+
+    const checkHealth = async (isInitialLoad = false) => {
+      const statusDot = document.querySelector('.chat-status-dot');
+      const statusText = document.querySelector('.chat-status-text');
+      if (!statusDot || !statusText) return;
+
+      try {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), 3000);
+        const response = await fetch(`${BASE_API_URL}/health`, {
+          method: 'GET',
+          signal: controller.signal
+        });
+        clearTimeout(id);
+        if (response.ok) {
+          statusDot.style.backgroundColor = '#34c759'; // Green
+          currentInterval = 120000; // reset on success
+        } else {
+          statusDot.style.backgroundColor = '#86868b'; // Grey (Offline)
+          statusText.textContent = 'Offline';
+          currentInterval = isInitialLoad ? 3000 : Math.min(currentInterval * 2, 120000);
+        }
+      } catch (error) {
+        statusDot.style.backgroundColor = '#86868b'; // Grey (Offline)
+        currentInterval = isInitialLoad ? 3000 : Math.min(currentInterval * 2, 120000);
+      }
+
+      if (healthTimeoutId) clearTimeout(healthTimeoutId);
+      healthTimeoutId = setTimeout(() => checkHealth(false), currentInterval);
+    };
+
+    // Run initial health check
+    checkHealth(true);
+
     chatPill.addEventListener('click', () => {
       const isShowing = chatModal.classList.toggle('show');
       if (isShowing) {
         trackEvent('chat_opened');
+        checkHealth(false);
       }
     });
 
@@ -1067,35 +1383,93 @@ window.customElements.define("experience-article", ExperienceArticle);
       return msg;
     };
 
+    const getSessionId = () => {
+      let sessionId = sessionStorage.getItem('session_id');
+      if (!sessionId) {
+        sessionId = (typeof crypto !== 'undefined' && crypto.randomUUID)
+          ? crypto.randomUUID()
+          : Math.random().toString(36).substring(2, 15) + '-' + Date.now();
+        sessionStorage.setItem('session_id', sessionId);
+      }
+      return sessionId;
+    };
+
+    const checkRateLimit = () => {
+      const today = new Date().toISOString().split('T')[0];
+      let rateData = localStorage.getItem('chat_rate_limit');
+      if (rateData) {
+        try {
+          rateData = JSON.parse(rateData);
+        } catch (e) {
+          rateData = null;
+        }
+      }
+
+      if (!rateData || rateData.day !== today) {
+        rateData = { day: today, count: 0 };
+      }
+
+      if (rateData.count >= 10) {
+        return false;
+      }
+
+      rateData.count++;
+      localStorage.setItem('chat_rate_limit', JSON.stringify(rateData));
+      return true;
+    };
+
+    const sendMessage = async (text) => {
+      const loadingMsg = addMessage('', 'bot', true);
+
+      if (!checkRateLimit()) {
+        chatMessages.removeChild(loadingMsg);
+        addMessage("Rate limit exceeded. You can only send 10 messages per day. Please try again tomorrow!", 'bot');
+        return;
+      }
+
+      try {
+        const chatHeaders = {
+          'Content-Type': 'application/json',
+          'session_id': getSessionId()
+        };
+        const chatCookie = sessionStorage.getItem('chat_cookie');
+        if (chatCookie) {
+          chatHeaders['Cookie'] = chatCookie;
+        }
+
+        // const response = await fetch(`http://127.0.0.1:7003/chat/owner`, {
+        const response = await fetch(`${BASE_API_URL}/chat/owner`, {
+          method: 'POST',
+          headers: chatHeaders,
+          body: JSON.stringify({ message: text })
+        });
+
+        const setCookie = response.headers.get('set-cookie') || response.headers.get('Set-Cookie');
+        if (setCookie) {
+          const parsedCookie = setCookie.split(';')[0].trim();
+          sessionStorage.setItem('chat_cookie', parsedCookie);
+        }
+        const data = await response.json();
+        chatMessages.removeChild(loadingMsg);
+        if (data && data.final_answer) {
+          addMessage(data.final_answer, 'bot');
+        } else {
+          addMessage("I've received your message! I'll get back to you soon.", 'bot');
+        }
+      } catch (error) {
+        console.error("Chat Error:", error);
+        chatMessages.removeChild(loadingMsg);
+        addMessage("Oops! Something went wrong. Please try again later.", 'bot');
+      }
+    };
+
     const handleSend = async () => {
       const text = chatInput.value.trim();
       if (text) {
         addMessage(text, 'user');
         chatInput.value = '';
-        trackEvent('chat_message_sent');
-
-        const loadingMsg = addMessage('', 'bot', true);
-
-        try {
-          const response = await fetch(`http://127.0.0.1:7003/chat/owner`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ message: text })
-          });
-          const data = await response.json();
-          chatMessages.removeChild(loadingMsg);
-          if (data && data.final_answer) {
-            addMessage(data.final_answer, 'bot');
-          } else {
-            addMessage("I've received your message! I'll get back to you soon.", 'bot');
-          }
-        } catch (error) {
-          console.error("Chat Error:", error);
-          chatMessages.removeChild(loadingMsg);
-          addMessage("Oops! Something went wrong. Please try again later.", 'bot');
-        }
+        trackEvent('chat_message_sent', { message: text.substring(0, 100) });
+        await sendMessage(text);
       }
     };
 
@@ -1109,41 +1483,92 @@ window.customElements.define("experience-article", ExperienceArticle);
       });
     }
 
-    if (FEATURES.chat) {
-      fetch('http://localhost:7003/health')
-      .then(response => {
-        // Check if the request was successful
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json(); // Parse the response as JSON
-      })
-      .then(data => {
-        console.log(data); // Work with your data here
-      })
-      .catch(error => {
-        console.error('Fetch error:', error);
-      });
-    }
-
     quickReplies.forEach(btn => {
       btn.addEventListener('click', () => {
         const reply = btn.getAttribute('data-reply');
-        addMessage(btn.textContent, 'user');
+        const text = btn.textContent;
+        const query = btn.getAttribute('data-query') || text;
 
+        const loadingMsg = addMessage('', 'bot', true);
+
+        // Enforce rate limiting on quick reply clicks
+        if (!checkRateLimit()) {
+          chatMessages.removeChild(loadingMsg);
+          addMessage("Rate limit exceeded. You can only send 10 messages per day. Please try again tomorrow!", 'bot');
+          return;
+        }
+
+        // Show user message instantly
+        chatMessages.removeChild(loadingMsg);
+        addMessage(query, 'user');
         trackEvent('quick_reply_clicked', { reply_type: reply });
+        trackEvent('chat_message_sent', { message: query.substring(0, 100) });
+
+        const nextLoadingMsg = addMessage('', 'bot', true);
 
         setTimeout(() => {
+          chatMessages.removeChild(nextLoadingMsg);
           let response = "";
           switch(reply) {
-            case 'projects': response = "Check out my work in the Projects section above! I've worked on many enterprise modernization tasks."; break;
-            case 'stack': response = "I specialize in Angular, Java Spring Boot, and Architecting for Scale."; break;
-            case 'resume': response = "You can find my CV download link in the About section of this page."; break;
-            default: response = "Thanks for your interest! How else can I help?";
+            case 'fun':
+              response = `The craziest thing I did in life was hiking Mt. Guiting-Guiting in the summer of 2025 under constant torrential rain.<br><br>With no clearing of clouds, it rained all day and night for 3 straight days. I almost fell down a 90-degree cliff, slipped and fell between jagged rocks on the notorious Knife's Edge trail, and slept with half of my body submerged in water because our camp flooded. We stayed wet for the entire 3 days. The irony? The exact moment we finally got back down to the trail head, the sky cleared and it became completely sunny!<br><br><div style="text-align:center;"><img src="assets/about/g2_hike.jpg" alt="Mt. Guiting-Guiting Knife's Edge" style="max-width:240px; width:100%; border-radius:10px; margin:5px auto; border:1px solid rgba(255,255,255,0.1);"><br><span style="display:block; font-size:11px; color:var(--text-secondary); margin-bottom:10px; font-style:italic;">Navigating Mt. Guiting-Guiting's Knife's Edge in the rain.</span></div><br>This wild hike reminded me that even the most volatile, stormy deployments eventually clear up. In systems engineering, I design for the worst-case storm—expecting failures and building resilient, decoupled components that can survive being "submerged" under unexpected conditions.`;
+              break;
+            case 'skills':
+              response = `<strong>My Technical Skills Portfolio:</strong><br><br><span style="display:inline-block; background:rgba(0,122,255,0.15); color:#007aff; padding:4px 10px; border-radius:10px; font-size:13px; font-weight:700; margin-bottom:4px;">FRONTEND</span><br>Angular, React, JavaScript, TypeScript, Tailwind CSS, Core Web Vitals Optimization<br><br><span style="display:inline-block; background:rgba(0,122,255,0.15); color:#007aff; padding:4px 10px; border-radius:10px; font-size:13px; font-weight:700; margin-bottom:4px;">BACKEND</span><br>Java Spring Boot, Node.js (Express), REST, gRPC, Apache Kafka, Keycloak (OAuth2/OIDC)<br><br><span style="display:inline-block; background:rgba(0,122,255,0.15); color:#007aff; padding:4px 10px; border-radius:10px; font-size:13px; font-weight:700; margin-bottom:4px;">FULLSTACK</span><br>PostgreSQL, Redis caching and session validation, Docker, Kubernetes, GitHub Actions CI/CD, AWS, Azure<br><br><span style="display:inline-block; background:rgba(0,122,255,0.15); color:#007aff; padding:4px 10px; border-radius:10px; font-size:13px; font-weight:700; margin-bottom:4px;">SOFT SKILLS</span><br>Technical Leadership, Team Mentorship & Brownbag Sessions, Agile Engineering Coordination, Decoupling Architectures<br><br><em>Do I have the right skills for your team? Let's connect!</em>`;
+              break;
+            case 'contact':
+              response = `You can reach me via the following channels:<br><br><strong>Email:</strong> <a href="mailto:jommelsaligumba@gmail.com" style="color:var(--accent-color);">jommelsaligumba@gmail.com</a><br><strong>Phone:</strong> +639291419400<br><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/jommelsaligumba/" target="_blank" style="color:var(--accent-color);">linkedin.com/in/jommelsaligumba</a>`;
+              break;
+            case 'me':
+              response = `👤 <strong>About Jommel Saligumba:</strong><br><br>I am a Senior Full-Stack Developer specializing in building decoupled, high-performance web systems and automated DevOps pipelines.<br><br>🎓 <strong>Education:</strong><br>Bachelor of Science in Computer Engineering from <strong>STI College Fairview</strong> (Class of 2016, Academic Awardee).<br><br><div style="text-align:center;"><img src="assets/about/PXL_20250630_132541732-EDIT.webp" alt="Jommel Saligumba" style="max-width:120px; width:100%; border-radius:50%; border:2px solid var(--accent-color); margin:5px auto;"></div>`;
+              break;
+            case 'projects':
+              response = `<strong>My Featured Projects:</strong><br><br>
+<div style="display:flex; gap:15px; overflow-x:auto; padding-bottom:10px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; width:100%;">
+  <a href="./mdb.html" style="text-decoration:none; color:inherit; flex:0 0 200px; scroll-snap-align:start; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; box-sizing:border-box;">
+    <img src="assets/mdb-dashboard-screen.png" alt="MDB" style="width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:8px;">
+    <h4 style="margin:0 0 4px 0; color:var(--text-primary); font-size:14px; font-weight:600; white-space:normal; line-height:1.2;">MDB (Media Data Base)</h4>
+    <p style="margin:0; font-size:12px; color:var(--text-secondary); line-height:1.3; flex-grow:1; white-space:normal;">High-performance media ecosystem with Spring Boot, Angular/Electron, and Kafka.</p>
+  </a>
+  <a href="https://google.com" target="_blank" style="text-decoration:none; color:inherit; flex:0 0 200px; scroll-snap-align:start; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; box-sizing:border-box;">
+    <img src="assets/denr.jpg" alt="DENR" style="width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:8px;">
+    <h4 style="margin:0 0 4px 0; color:var(--text-primary); font-size:14px; font-weight:600; white-space:normal; line-height:1.2;">DENR Booking</h4>
+    <p style="margin:0; font-size:12px; color:var(--text-secondary); line-height:1.3; flex-grow:1; white-space:normal;">Mountaineering booking portal with QR code ticketing for seasonal crowds.</p>
+  </a>
+  <a href="https://register.account-utradeph.com/#/open-an-account/registration/consent" target="_blank" style="text-decoration:none; color:inherit; flex:0 0 200px; scroll-snap-align:start; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; box-sizing:border-box;">
+    <img src="assets/utrade.jpg" alt="U-Trade" style="width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:8px;">
+    <h4 style="margin:0 0 4px 0; color:var(--text-primary); font-size:14px; font-weight:600; white-space:normal; line-height:1.2;">U-Trade Platform</h4>
+    <p style="margin:0; font-size:12px; color:var(--text-secondary); line-height:1.3; flex-grow:1; white-space:normal;">Real-time stock trading administration and onboarding registration platform.</p>
+  </a>
+  <a href="https://google.com" target="_blank" style="text-decoration:none; color:inherit; flex:0 0 200px; scroll-snap-align:start; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; box-sizing:border-box;">
+    <img src="assets/laptop-with-code.jpg" alt="XBin" style="width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:8px;">
+    <h4 style="margin:0 0 4px 0; color:var(--text-primary); font-size:14px; font-weight:600; white-space:normal; line-height:1.2;">XBin Timekeeper</h4>
+    <p style="margin:0; font-size:12px; color:var(--text-secondary); line-height:1.3; flex-grow:1; white-space:normal;">Enterprise remote employee shift tracking and dashboard timekeeper.</p>
+  </a>
+</div>`;
+              break;
+            case 'stack':
+              response = "I specialize in Angular, Java Spring Boot, and Architecting for Scale.";
+              break;
+            case 'resume':
+              response = "You can find my CV download link in the About section of this page.";
+              break;
+            default:
+              response = "Thanks for your interest! How else can I help?";
           }
           addMessage(response, 'bot');
         }, 800);
       });
+    });
+  }
+
+  // Trigger entry animation on load (skip in automated tests to prevent flakiness)
+  if (!navigator.webdriver) {
+    window.addEventListener('load', () => {
+      const chatPill = document.getElementById('chat-pill');
+      if (chatPill) {
+        chatPill.classList.add('animate-in');
+      }
     });
   }
 })();
