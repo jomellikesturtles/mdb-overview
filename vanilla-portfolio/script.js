@@ -32,7 +32,8 @@ window.addEventListener("load", () => {
     spotlight: isFeatureEnabled('spotlight'),
     lazyLoading: isFeatureEnabled('lazyLoading'),
     download: isFeatureEnabled('download'),
-    blog: isFeatureEnabled('blog')
+    blog: isFeatureEnabled('blog'),
+    autoOpenChat: isFeatureEnabled('autoOpenChat')
   };
 
   if (window.location.pathname.includes('blog.html') && !FEATURES.blog) {
@@ -1352,6 +1353,12 @@ window.customElements.define("blog-app", BlogApp);
     // Run initial health check
     checkHealth(true);
 
+    // Auto-open chat modal on load if toggles are enabled
+    if (isFeatureEnabled('chat') && isFeatureEnabled('autoOpenChat')) {
+      chatModal.classList.add('show');
+      trackEvent('chat_opened');
+    }
+
     chatPill.addEventListener('click', () => {
       const isShowing = chatModal.classList.toggle('show');
       if (isShowing) {
@@ -1511,7 +1518,7 @@ window.customElements.define("blog-app", BlogApp);
           let response = "";
           switch(reply) {
             case 'fun':
-              response = `The craziest thing I did in life was hiking Mt. Guiting-Guiting in the summer of 2025 under constant torrential rain.<br><br>With no clearing of clouds, it rained all day and night for 3 straight days. I almost fell down a 90-degree cliff, slipped and fell between jagged rocks on the notorious Knife's Edge trail, and slept with half of my body submerged in water because our camp flooded. We stayed wet for the entire 3 days. The irony? The exact moment we finally got back down to the trail head, the sky cleared and it became completely sunny!<br><br><div style="text-align:center;"><img src="assets/about/g2_hike.jpg" alt="Mt. Guiting-Guiting Knife's Edge" style="max-width:240px; width:100%; border-radius:10px; margin:5px auto; border:1px solid rgba(255,255,255,0.1);"><br><span style="display:block; font-size:11px; color:var(--text-secondary); margin-bottom:10px; font-style:italic;">Navigating Mt. Guiting-Guiting's Knife's Edge in the rain.</span></div><br>This wild hike reminded me that even the most volatile, stormy deployments eventually clear up. In systems engineering, I design for the worst-case storm—expecting failures and building resilient, decoupled components that can survive being "submerged" under unexpected conditions.`;
+              response = `The craziest thing I did in life was hiking Mt. Guiting-Guiting in the summer of 2025 under constant torrential rain.<br><br>With no clearing of clouds, it rained all day and night for 3 straight days. I almost fell down a 90-degree cliff, slipped and fell between jagged rocks on the notorious Knife's Edge trail, and slept with half of my body submerged in water because our camp flooded. We stayed wet for the entire 3 days. The irony? The exact moment we finally got back down to the trail head, the sky cleared and it became completely sunny!<br><br><div style="text-align:center;"><img src="assets/about/g2_hike.jpg" alt="Mt. Guiting-Guiting Knife's Edge" style="max-width:240px; width:100%; border-radius:10px; margin:5px auto; border:1px solid rgba(255,255,255,0.1);"><br><span style="display:block; font-size:11px; color:var(--text-secondary); margin-bottom:10px; font-style:italic;">Navigating Mt. Guiting-Guiting's Knife's Edge in the rain.</span></div><br>This wild hike reminded me that even the most volatile, stormy deployments eventually clear up. In systems engineering, I design for the worst-case storm expecting failures and building resilient, decoupled components that can survive being "submerged" under unexpected conditions.`;
               break;
             case 'skills':
               response = `<strong>My Technical Skills Portfolio:</strong><br><br><span style="display:inline-block; background:rgba(0,122,255,0.15); color:#007aff; padding:4px 10px; border-radius:10px; font-size:13px; font-weight:700; margin-bottom:4px;">FRONTEND</span><br>Angular, React, JavaScript, TypeScript, Tailwind CSS, Core Web Vitals Optimization<br><br><span style="display:inline-block; background:rgba(0,122,255,0.15); color:#007aff; padding:4px 10px; border-radius:10px; font-size:13px; font-weight:700; margin-bottom:4px;">BACKEND</span><br>Java Spring Boot, Node.js (Express), REST, gRPC, Apache Kafka, Keycloak (OAuth2/OIDC)<br><br><span style="display:inline-block; background:rgba(0,122,255,0.15); color:#007aff; padding:4px 10px; border-radius:10px; font-size:13px; font-weight:700; margin-bottom:4px;">FULLSTACK</span><br>PostgreSQL, Redis caching and session validation, Docker, Kubernetes, GitHub Actions CI/CD, AWS, Azure<br><br><span style="display:inline-block; background:rgba(0,122,255,0.15); color:#007aff; padding:4px 10px; border-radius:10px; font-size:13px; font-weight:700; margin-bottom:4px;">SOFT SKILLS</span><br>Technical Leadership, Team Mentorship & Brownbag Sessions, Agile Engineering Coordination, Decoupling Architectures<br><br><em>Do I have the right skills for your team? Let's connect!</em>`;

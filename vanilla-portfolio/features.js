@@ -1,7 +1,7 @@
 // Shared Feature Toggles Configuration
 const DEFAULT_FEATURES = {
   mdbProject: true,
-  chat: false,
+  chat: true,
   lighthouseBadge: false,
   blueprint: false,
   workflow: false,
@@ -9,7 +9,9 @@ const DEFAULT_FEATURES = {
   tracking: true,
   spotlight: false,
   lazyLoading: false,
-  download: false
+  download: false,
+  blog: false,
+  autoOpenChat: (typeof navigator !== 'undefined' && navigator.webdriver) ? false : true
 };
 
 // Helper to get feature state (checking URL params, falling back to defaults)
