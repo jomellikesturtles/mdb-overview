@@ -1445,6 +1445,16 @@ window.customElements.define("blog-app", BlogApp);
       chatModal.classList.remove('show');
     });
 
+    // Close modal when clicking outside of it
+    document.addEventListener('click', (e) => {
+      if (chatModal.classList.contains('show')) {
+        if (!chatModal.contains(e.target) && !chatPill.contains(e.target)) {
+          chatModal.classList.remove('show');
+          trackEvent('chat_closed');
+        }
+      }
+    });
+
     const addMessage = (text, sender, isLoading = false) => {
       const msg = document.createElement('div');
       msg.classList.add('chat-message', sender);

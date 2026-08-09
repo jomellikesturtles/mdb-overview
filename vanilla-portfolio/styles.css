@@ -1068,7 +1068,8 @@ input {
 .chat-pill-button {
   position: fixed;
   bottom: 30px;
-  right: 30px;
+  left: 50%;
+  transform: translateX(-50%);
   background: var(--chat-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -1090,7 +1091,7 @@ input {
 body:has(#chat-modal.show) .chat-pill-button {
   opacity: 0;
   pointer-events: none;
-  transform: translateY(100px);
+  transform: translate(-50%, 100px);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -1100,12 +1101,12 @@ body:has(#chat-modal.show) .chat-pill-button {
 }
 
 .chat-pill-button:hover {
-  /* transform: scale(1.05) translateY(-2px); */
+  transform: translateX(-50%) scale(1.05) translateY(-2px);
   background: #fff;
 }
 
 .chat-pill-button:active {
-  transform: scale(0.95);
+  transform: translateX(-50%) scale(0.95);
 }
 
 .chat-pill-button .icon {
@@ -1417,33 +1418,19 @@ body:has(#chat-modal.show) .chat-pill-button {
   .chat-modal-container.show {
     transform: translateY(0);
   }
-}
 
-.chat-pill-button {
-  position: fixed;
-  bottom: 30px;
-  right: 50%;
-  margin: auto;
-  /* transform: translateX(-50%); */
-}
-
-.chat-pill-button:hover {
-  /* Include translateX(-50%) to maintain center */
-  /* transform: translateX(-50%) scale(1.05) translateY(-2px); */
-  background: #fff;
-}
-
-.chat-pill-button:active {
-  /* Include translateX(-50%) */
-  transform: translateX(-50%) scale(0.95);
-}
-
-@media (max-width: 480px) {
   .chat-pill-button {
     bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    /* right: auto; if needed to override */
+  }
+
+  .chat-pill-button:active {
+    transform: translateX(-50%) scale(0.95);
+  }
+
+  body:has(#chat-modal.show) .chat-pill-button {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 100px);
   }
 }
 
@@ -1480,4 +1467,9 @@ body:has(#chat-modal.show) .chat-pill-button {
   text-align: center;
   margin: 8px 0 16px 0;
   font-weight: 400;
+}
+
+/* Disable scroll of background page when chat modal is open */
+body:has(#chat-modal.show) {
+  overflow: hidden !important;
 }
