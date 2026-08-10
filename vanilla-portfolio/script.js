@@ -1315,15 +1315,39 @@ window.customElements.define("blog-app", BlogApp);
   const chatSend = document.getElementById('chat-send');
   const chatMessages = document.getElementById('chat-messages');
   const quickReplies = document.querySelectorAll('.quick-reply-btn');
-
   if (chatPill && chatModal) {
     let currentInterval = 120000; // default 2 minutes
     let healthTimeoutId = null;
+
+    const setChatInteractive = (interactive) => {
+      if (chatInput) {
+        chatInput.disabled = !interactive;
+        const statusTextEl = document.querySelector('.chat-status-text');
+        const isOffline = statusTextEl && statusTextEl.textContent === 'Offline';
+        chatInput.placeholder = interactive
+          ? "Ask Jommel's AI assistant..."
+          : (isOffline ? "Assistant offline." : "Checking connection...");
+      }
+      if (chatSend) {
+        chatSend.disabled = !interactive;
+        chatSend.style.opacity = interactive ? '1' : '0.5';
+        chatSend.style.pointerEvents = interactive ? 'auto' : 'none';
+      }
+      quickReplies.forEach(btn => {
+        btn.disabled = !interactive;
+        btn.style.opacity = interactive ? '1' : '0.6';
+        btn.style.pointerEvents = interactive ? 'auto' : 'none';
+      });
+    };
 
     const checkHealth = async (isInitialLoad = false) => {
       const statusDot = document.querySelector('.chat-status-dot');
       const statusText = document.querySelector('.chat-status-text');
       if (!statusDot || !statusText) return;
+
+      // Enter loading state
+      statusDot.classList.add('loading');
+      setChatInteractive(false);
 
       try {
         const controller = new AbortController();
@@ -1333,16 +1357,21 @@ window.customElements.define("blog-app", BlogApp);
           signal: controller.signal
         });
         clearTimeout(id);
+        statusDot.classList.remove('loading');
         if (response.ok) {
           statusDot.style.backgroundColor = '#34c759'; // Green
+          setChatInteractive(true);
           currentInterval = 120000; // reset on success
         } else {
           statusDot.style.backgroundColor = '#86868b'; // Grey (Offline)
           statusText.textContent = 'Offline';
+          setChatInteractive(false);
           currentInterval = isInitialLoad ? 3000 : Math.min(currentInterval * 2, 120000);
         }
       } catch (error) {
+        statusDot.classList.remove('loading');
         statusDot.style.backgroundColor = '#86868b'; // Grey (Offline)
+        setChatInteractive(false);
         currentInterval = isInitialLoad ? 3000 : Math.min(currentInterval * 2, 120000);
       }
 
@@ -1359,6 +1388,51 @@ window.customElements.define("blog-app", BlogApp);
       trackEvent('chat_opened');
     }
 
+    // Track clicks on links inside chat messages for analytics
+    chatMessages.addEventListener('click', (e) => {
+      const link = e.target.closest('a');
+      if (link) {
+        const title = link.getAttribute('title') || link.textContent.trim();
+        trackEvent('chat_link_clicked', { link_title: title, href: link.getAttribute('href') });
+      }
+    });
+
+    const saveMessageToHistory = (text, sender) => {
+      let history = [];
+      try {
+        history = JSON.parse(sessionStorage.getItem('chat_history') || '[]');
+      } catch (e) {
+        history = [];
+      }
+      history.push({ text, sender });
+      sessionStorage.setItem('chat_history', JSON.stringify(history));
+    };
+
+    const loadMessageHistory = () => {
+      let history = [];
+      try {
+        history = JSON.parse(sessionStorage.getItem('chat_history') || '[]');
+      } catch (e) {
+        history = [];
+      }
+
+      if (history.length > 0) {
+        chatMessages.innerHTML = '';
+        history.forEach(msg => {
+          const div = document.createElement('div');
+          div.classList.add('chat-message', msg.sender);
+          div.innerHTML = msg.text;
+          chatMessages.appendChild(div);
+        });
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      } else {
+        saveMessageToHistory('Hi! How can I help you today?', 'bot');
+      }
+    };
+
+    // Load message history on init
+    loadMessageHistory();
+
     chatPill.addEventListener('click', () => {
       const isShowing = chatModal.classList.toggle('show');
       if (isShowing) {
@@ -1371,6 +1445,16 @@ window.customElements.define("blog-app", BlogApp);
       chatModal.classList.remove('show');
     });
 
+    // Close modal when clicking outside of it
+    document.addEventListener('click', (e) => {
+      if (chatModal.classList.contains('show')) {
+        if (!chatModal.contains(e.target) && !chatPill.contains(e.target)) {
+          chatModal.classList.remove('show');
+          trackEvent('chat_closed');
+        }
+      }
+    });
+
     const addMessage = (text, sender, isLoading = false) => {
       const msg = document.createElement('div');
       msg.classList.add('chat-message', sender);
@@ -1378,12 +1462,12 @@ window.customElements.define("blog-app", BlogApp);
         msg.classList.add('loading');
         msg.innerHTML = `<div class="loading-dots"><span></span><span></span><span></span></div>`;
       } else {
-        // Regex to detect URLs
-        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        // Regex to detect URLs (ignoring those already inside HTML attributes)
+        const urlRegex = /(?<!href=["'])(?<!src=["'])\b(https?:\/\/[^\s<"']+)/gi;
         text = simpleMarkdownParser(text);
-        msg.innerHTML = text.replace(urlRegex, (url) => `<a href="${url}" target="_blank" rel="noopener">${url}</a>`);
-
-
+        const html = text.replace(urlRegex, (url) => `<a href="${url}" target="_blank" rel="noopener">${url}</a>`);
+        msg.innerHTML = html;
+        saveMessageToHistory(html, sender);
       }
       chatMessages.appendChild(msg);
       chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1532,22 +1616,22 @@ window.customElements.define("blog-app", BlogApp);
             case 'projects':
               response = `<strong>My Featured Projects:</strong><br><br>
 <div style="display:flex; gap:15px; overflow-x:auto; padding-bottom:10px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; width:100%;">
-  <a href="./mdb.html" style="text-decoration:none; color:inherit; flex:0 0 200px; scroll-snap-align:start; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; box-sizing:border-box;">
+  <a href="./mdb.html" title="MDB (Media Data Base)" style="text-decoration:none; color:inherit; flex:0 0 200px; scroll-snap-align:start; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; box-sizing:border-box;">
     <img src="assets/mdb-dashboard-screen.png" alt="MDB" style="width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:8px;">
     <h4 style="margin:0 0 4px 0; color:var(--text-primary); font-size:14px; font-weight:600; white-space:normal; line-height:1.2;">MDB (Media Data Base)</h4>
     <p style="margin:0; font-size:12px; color:var(--text-secondary); line-height:1.3; flex-grow:1; white-space:normal;">High-performance media ecosystem with Spring Boot, Angular/Electron, and Kafka.</p>
   </a>
-  <a href="https://google.com" target="_blank" style="text-decoration:none; color:inherit; flex:0 0 200px; scroll-snap-align:start; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; box-sizing:border-box;">
+  <a href="https://google.com" target="_blank" title="DENR Booking" style="text-decoration:none; color:inherit; flex:0 0 200px; scroll-snap-align:start; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; box-sizing:border-box;">
     <img src="assets/denr.jpg" alt="DENR" style="width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:8px;">
     <h4 style="margin:0 0 4px 0; color:var(--text-primary); font-size:14px; font-weight:600; white-space:normal; line-height:1.2;">DENR Booking</h4>
     <p style="margin:0; font-size:12px; color:var(--text-secondary); line-height:1.3; flex-grow:1; white-space:normal;">Mountaineering booking portal with QR code ticketing for seasonal crowds.</p>
   </a>
-  <a href="https://register.account-utradeph.com/#/open-an-account/registration/consent" target="_blank" style="text-decoration:none; color:inherit; flex:0 0 200px; scroll-snap-align:start; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; box-sizing:border-box;">
+  <a href="https://register.account-utradeph.com/#/open-an-account/registration/consent" target="_blank" title="U-Trade Platform" style="text-decoration:none; color:inherit; flex:0 0 200px; scroll-snap-align:start; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; box-sizing:border-box;">
     <img src="assets/utrade.jpg" alt="U-Trade" style="width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:8px;">
     <h4 style="margin:0 0 4px 0; color:var(--text-primary); font-size:14px; font-weight:600; white-space:normal; line-height:1.2;">U-Trade Platform</h4>
     <p style="margin:0; font-size:12px; color:var(--text-secondary); line-height:1.3; flex-grow:1; white-space:normal;">Real-time stock trading administration and onboarding registration platform.</p>
   </a>
-  <a href="https://google.com" target="_blank" style="text-decoration:none; color:inherit; flex:0 0 200px; scroll-snap-align:start; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; box-sizing:border-box;">
+  <a href="https://google.com" target="_blank" title="XBin Timekeeper" style="text-decoration:none; color:inherit; flex:0 0 200px; scroll-snap-align:start; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px; display:flex; flex-direction:column; box-sizing:border-box;">
     <img src="assets/laptop-with-code.jpg" alt="XBin" style="width:100%; height:100px; object-fit:cover; border-radius:8px; margin-bottom:8px;">
     <h4 style="margin:0 0 4px 0; color:var(--text-primary); font-size:14px; font-weight:600; white-space:normal; line-height:1.2;">XBin Timekeeper</h4>
     <p style="margin:0; font-size:12px; color:var(--text-secondary); line-height:1.3; flex-grow:1; white-space:normal;">Enterprise remote employee shift tracking and dashboard timekeeper.</p>
@@ -1558,7 +1642,7 @@ window.customElements.define("blog-app", BlogApp);
               response = "I specialize in Angular, Java Spring Boot, and Architecting for Scale.";
               break;
             case 'resume':
-              response = "You can find my CV download link in the About section of this page.";
+              response = `You can download my CV directly here:<br><br><a href="../saligumba_jommel_2026.pdf" download="Saligumba_Jommel_CV" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:var(--accent-color); color:#fff; padding:8px 16px; border-radius:8px; text-decoration:none; font-weight:600; font-size:13px; transition:opacity 0.2s;">Download CV (PDF)</a>`;
               break;
             default:
               response = "Thanks for your interest! How else can I help?";

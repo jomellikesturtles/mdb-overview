@@ -1068,7 +1068,8 @@ input {
 .chat-pill-button {
   position: fixed;
   bottom: 30px;
-  right: 30px;
+  left: 50%;
+  transform: translateX(-50%);
   background: var(--chat-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -1086,6 +1087,13 @@ input {
   font-weight: 500;
 }
 
+/* Hide chat pill when modal is showing */
+body:has(#chat-modal.show) .chat-pill-button {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 100px);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .chat-pill-button.animate-in {
     animation: chatPillSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1093,12 +1101,12 @@ input {
 }
 
 .chat-pill-button:hover {
-  /* transform: scale(1.05) translateY(-2px); */
+  transform: translateX(-50%) scale(1.05) translateY(-2px);
   background: #fff;
 }
 
 .chat-pill-button:active {
-  transform: scale(0.95);
+  transform: translateX(-50%) scale(0.95);
 }
 
 .chat-pill-button .icon {
@@ -1177,7 +1185,25 @@ input {
   border-radius: 50%;
 }
 
+.chat-status-dot.loading {
+  background-color: transparent !important;
+  border: 2px solid rgba(0, 122, 255, 0.2) !important;
+  border-top-color: #007aff !important;
+  border-radius: 50% !important;
+  animation: statusSpinner 1s linear infinite !important;
+  box-sizing: border-box;
+}
+
+@keyframes statusSpinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .chat-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
   background: none;
   border: none;
   font-size: 24px;
@@ -1185,6 +1211,12 @@ input {
   cursor: pointer;
   padding: 0;
   line-height: 1;
+  z-index: 10;
+  transition: color 0.2s ease;
+}
+
+.chat-close:hover {
+  color: #1d1d1f;
 }
 
 /* Body */
@@ -1196,6 +1228,12 @@ input {
   flex-direction: column;
   gap: 12px;
   background: #fff;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.chat-modal-body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
 }
 
 .chat-message {
@@ -1203,7 +1241,7 @@ input {
   padding: 10px 16px;
   border-radius: 18px;
   font-size: 14px;
-  line-height: 1.4;
+  line-height: 1.5;
   white-space: pre-wrap;
 }
 
@@ -1287,13 +1325,14 @@ input {
   color: var(--chat-primary);
   white-space: nowrap;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .quick-reply-btn:hover {
   background: var(--chat-primary);
   color: #fff;
   border-color: var(--chat-primary);
+  transform: scale(1.03) translateY(-1px);
 }
 
 /* Footer */
@@ -1321,6 +1360,13 @@ input {
   background: #e5e5ea;
 }
 
+#chat-input:disabled {
+  background: #f2f2f7;
+  color: #86868b;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .chat-send-btn {
   background: none;
   border: none;
@@ -1344,28 +1390,24 @@ input {
 }
 
 /* Responsive */
-@media (min-width: 768px) {
+@media (min-width: 769px) {
   .chat-modal-container {
     width: 80vw;
     right: 10vw;
     max-width: 80%;
     left: 10%;
+    height: 95vh;
+    max-height: calc(100vh - 80px);
+    bottom: 40px;
   }
 }
 
-/* Responsive */
+/* Responsive - Tablet & Mobile Fullscreen */
 @media (max-width: 768px) {
-  .chat-modal-container {
-    width: 80vw;
-    right: 10vw;
-  }
-}
-
-/* Mobile Adjustments */
-@media (max-width: 480px) {
   .chat-modal-container {
     bottom: 0;
     right: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     max-height: 100%;
@@ -1376,33 +1418,19 @@ input {
   .chat-modal-container.show {
     transform: translateY(0);
   }
-}
 
-.chat-pill-button {
-  position: fixed;
-  bottom: 30px;
-  right: 50%;
-  margin: auto;
-  /* transform: translateX(-50%); */
-}
-
-.chat-pill-button:hover {
-  /* Include translateX(-50%) to maintain center */
-  /* transform: translateX(-50%) scale(1.05) translateY(-2px); */
-  background: #fff;
-}
-
-.chat-pill-button:active {
-  /* Include translateX(-50%) */
-  transform: translateX(-50%) scale(0.95);
-}
-
-@media (max-width: 480px) {
   .chat-pill-button {
     bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    /* right: auto; if needed to override */
+  }
+
+  .chat-pill-button:active {
+    transform: translateX(-50%) scale(0.95);
+  }
+
+  body:has(#chat-modal.show) .chat-pill-button {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 100px);
   }
 }
 
@@ -1439,4 +1467,9 @@ input {
   text-align: center;
   margin: 8px 0 16px 0;
   font-weight: 400;
+}
+
+/* Disable scroll of background page when chat modal is open */
+body:has(#chat-modal.show) {
+  overflow: hidden !important;
 }
