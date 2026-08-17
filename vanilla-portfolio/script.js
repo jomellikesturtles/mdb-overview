@@ -1319,24 +1319,20 @@ window.customElements.define("blog-app", BlogApp);
     let currentInterval = 120000; // default 2 minutes
     let healthTimeoutId = null;
 
-    const setChatInteractive = (interactive) => {
+    const setChatInteractive = (interactive = true) => {
       if (chatInput) {
-        chatInput.disabled = !interactive;
-        const statusTextEl = document.querySelector('.chat-status-text');
-        const isOffline = statusTextEl && statusTextEl.textContent === 'Offline';
-        chatInput.placeholder = interactive
-          ? "Ask Jommel's AI assistant..."
-          : (isOffline ? "Assistant offline." : "Checking connection...");
+        chatInput.disabled = false;
+        chatInput.placeholder = "Ask Jommel's AI assistant...";
       }
       if (chatSend) {
-        chatSend.disabled = !interactive;
-        chatSend.style.opacity = interactive ? '1' : '0.5';
-        chatSend.style.pointerEvents = interactive ? 'auto' : 'none';
+        chatSend.disabled = false;
+        chatSend.style.opacity = '1';
+        chatSend.style.pointerEvents = 'auto';
       }
       quickReplies.forEach(btn => {
-        btn.disabled = !interactive;
-        btn.style.opacity = interactive ? '1' : '0.6';
-        btn.style.pointerEvents = interactive ? 'auto' : 'none';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
       });
     };
 
@@ -1347,7 +1343,7 @@ window.customElements.define("blog-app", BlogApp);
 
       // Enter loading state
       statusDot.classList.add('loading');
-      setChatInteractive(false);
+      setChatInteractive(true);
 
       try {
         const controller = new AbortController();
@@ -1360,18 +1356,20 @@ window.customElements.define("blog-app", BlogApp);
         statusDot.classList.remove('loading');
         if (response.ok) {
           statusDot.style.backgroundColor = '#34c759'; // Green
+          // statusText.textContent = 'AI Copilot';
           setChatInteractive(true);
           currentInterval = 120000; // reset on success
         } else {
           statusDot.style.backgroundColor = '#86868b'; // Grey (Offline)
           statusText.textContent = 'Offline';
-          setChatInteractive(false);
+          setChatInteractive(true);
           currentInterval = isInitialLoad ? 3000 : Math.min(currentInterval * 2, 120000);
         }
       } catch (error) {
         statusDot.classList.remove('loading');
         statusDot.style.backgroundColor = '#86868b'; // Grey (Offline)
-        setChatInteractive(false);
+        // statusText.textContent = 'Offline';
+        setChatInteractive(true);
         currentInterval = isInitialLoad ? 3000 : Math.min(currentInterval * 2, 120000);
       }
 
@@ -1509,6 +1507,20 @@ window.customElements.define("blog-app", BlogApp);
       return true;
     };
 
+    const refundRateLimit = () => {
+      const today = new Date().toISOString().split('T')[0];
+      let rateData = localStorage.getItem('chat_rate_limit');
+      if (rateData) {
+        try {
+          rateData = JSON.parse(rateData);
+          if (rateData.day === today && rateData.count > 0) {
+            rateData.count--;
+            localStorage.setItem('chat_rate_limit', JSON.stringify(rateData));
+          }
+        } catch (e) {}
+      }
+    };
+
     const sendMessage = async (text) => {
       const loadingMsg = addMessage('', 'bot', true);
 
@@ -1528,12 +1540,16 @@ window.customElements.define("blog-app", BlogApp);
           chatHeaders['Cookie'] = chatCookie;
         }
 
-        // const response = await fetch(`http://127.0.0.1:7003/chat/owner`, {
         const response = await fetch(`${BASE_API_URL}/chat/owner`, {
           method: 'POST',
           headers: chatHeaders,
+          credentials: 'include',
           body: JSON.stringify({ message: text })
         });
+
+        if (!response.ok) {
+          throw new Error(`Chat API error: ${response.status}`);
+        }
 
         const setCookie = response.headers.get('set-cookie') || response.headers.get('Set-Cookie');
         if (setCookie) {
@@ -1541,7 +1557,13 @@ window.customElements.define("blog-app", BlogApp);
           sessionStorage.setItem('chat_cookie', parsedCookie);
         }
         const data = await response.json();
-        chatMessages.removeChild(loadingMsg);
+        if (loadingMsg && loadingMsg.parentNode) {
+          chatMessages.removeChild(loadingMsg);
+        }
+        if (data && data.type === 'limit_reached') {
+          addMessage(data.final_answer || "Daily prompt limit reached. Let's connect on LinkedIn!", 'bot');
+          return;
+        }
         if (data && data.final_answer) {
           addMessage(data.final_answer, 'bot');
         } else {
@@ -1549,8 +1571,11 @@ window.customElements.define("blog-app", BlogApp);
         }
       } catch (error) {
         console.error("Chat Error:", error);
-        chatMessages.removeChild(loadingMsg);
-        addMessage("Oops! Something went wrong. Please try again later.", 'bot');
+        refundRateLimit();
+        if (loadingMsg && loadingMsg.parentNode) {
+          chatMessages.removeChild(loadingMsg);
+        }
+        addMessage("Oops! Something went wrong with the chat server. Please try again later.", 'bot');
       }
     };
 
