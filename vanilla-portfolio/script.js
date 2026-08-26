@@ -1,8 +1,7 @@
 const pageLoadTime = performance.now();
 var lazyLoading = false
 var tracking_feature = false
-// const BASE_API_URL = 'https://qnvezz6gmtw3vxwmc2oxvvgncy0jnxqg.lambda-url.ap-southeast-1.on.aws';
-const BASE_API_URL = 'http://localhost:7003';
+const BASE_API_URL = 'https://qnvezz6gmtw3vxwmc2oxvvgncy0jnxqg.lambda-url.ap-southeast-1.on.aws';
 function trackEvent(eventName, eventArgs) {
   if (window.umami && !!tracking_feature) {
     !!eventArgs ? umami.track(eventName, eventArgs) : umami.track(eventName)
