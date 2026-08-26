@@ -1,7 +1,8 @@
 const pageLoadTime = performance.now();
 var lazyLoading = false
 var tracking_feature = false
-const BASE_API_URL = 'https://qnvezz6gmtw3vxwmc2oxvvgncy0jnxqg.lambda-url.ap-southeast-1.on.aws';
+// const BASE_API_URL = 'https://qnvezz6gmtw3vxwmc2oxvvgncy0jnxqg.lambda-url.ap-southeast-1.on.aws';
+const BASE_API_URL = 'http://localhost:7003';
 function trackEvent(eventName, eventArgs) {
   if (window.umami && !!tracking_feature) {
     !!eventArgs ? umami.track(eventName, eventArgs) : umami.track(eventName)
@@ -1540,15 +1541,51 @@ window.customElements.define("blog-app", BlogApp);
           chatHeaders['Cookie'] = chatCookie;
         }
 
-        const response = await fetch(`${BASE_API_URL}/chat/owner`, {
-          method: 'POST',
-          headers: chatHeaders,
-          credentials: 'include',
-          body: JSON.stringify({ message: text })
-        });
+        // Try /v2/chat/owner (streaming) first, fallback to /v1/chat/owner or /chat/owner (legacy)
+        let response = null;
+        try {
+          response = await fetch(`${BASE_API_URL}/v2/chat/owner`, {
+            method: 'POST',
+            headers: chatHeaders,
+            credentials: 'include',
+            body: JSON.stringify({ message: text })
+          });
+          if (!response.ok && (response.status === 404 || response.status === 405)) {
+            response = await fetch(`${BASE_API_URL}/v1/chat/owner`, {
+              method: 'POST',
+              headers: chatHeaders,
+              credentials: 'include',
+              body: JSON.stringify({ message: text })
+            });
+            if (!response.ok && (response.status === 404 || response.status === 405)) {
+              response = await fetch(`${BASE_API_URL}/chat/owner`, {
+                method: 'POST',
+                headers: chatHeaders,
+                credentials: 'include',
+                body: JSON.stringify({ message: text })
+              });
+            }
+          }
+        } catch (err) {
+          try {
+            response = await fetch(`${BASE_API_URL}/v1/chat/owner`, {
+              method: 'POST',
+              headers: chatHeaders,
+              credentials: 'include',
+              body: JSON.stringify({ message: text })
+            });
+          } catch (e) {
+            response = await fetch(`${BASE_API_URL}/chat/owner`, {
+              method: 'POST',
+              headers: chatHeaders,
+              credentials: 'include',
+              body: JSON.stringify({ message: text })
+            });
+          }
+        }
 
-        if (!response.ok) {
-          throw new Error(`Chat API error: ${response.status}`);
+        if (!response || !response.ok) {
+          throw new Error(`Chat API error: ${response ? response.status : 'Network error'}`);
         }
 
         const setCookie = response.headers.get('set-cookie') || response.headers.get('Set-Cookie');
@@ -1556,18 +1593,85 @@ window.customElements.define("blog-app", BlogApp);
           const parsedCookie = setCookie.split(';')[0].trim();
           sessionStorage.setItem('chat_cookie', parsedCookie);
         }
-        const data = await response.json();
-        if (loadingMsg && loadingMsg.parentNode) {
-          chatMessages.removeChild(loadingMsg);
-        }
-        if (data && data.type === 'limit_reached') {
-          addMessage(data.final_answer || "Daily prompt limit reached. Let's connect on LinkedIn!", 'bot');
-          return;
-        }
-        if (data && data.final_answer) {
-          addMessage(data.final_answer, 'bot');
+        const contentType = response.headers.get('content-type') || '';
+
+        if (contentType.includes('application/json')) {
+          const data = await response.json();
+          if (loadingMsg && loadingMsg.parentNode) {
+            chatMessages.removeChild(loadingMsg);
+          }
+          if (data && data.type === 'limit_reached') {
+            addMessage(data.final_answer || "Daily prompt limit reached. Let's connect on LinkedIn!", 'bot');
+            return;
+          }
+          if (data && data.final_answer) {
+            addMessage(data.final_answer, 'bot');
+          } else {
+            addMessage("I've received your message! I'll get back to you soon.", 'bot');
+          }
         } else {
-          addMessage("I've received your message! I'll get back to you soon.", 'bot');
+          // Response streaming via SSE / ReadableStream
+          if (loadingMsg && loadingMsg.parentNode) {
+            chatMessages.removeChild(loadingMsg);
+          }
+
+          const botMsg = document.createElement('div');
+          botMsg.classList.add('chat-message', 'bot');
+          chatMessages.appendChild(botMsg);
+
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder('utf-8');
+          let accumulatedText = '';
+          let buffer = '';
+
+          const formatAndRender = (rawText) => {
+            const urlRegex = /(?<!href=["'])(?<!src=["'])\b(https?:\/\/[^\s<"']+)/gi;
+            const parsed = simpleMarkdownParser(rawText);
+            const html = parsed.replace(urlRegex, (url) => `<a href="${url}" target="_blank" rel="noopener">${url}</a>`);
+            botMsg.innerHTML = html;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return html;
+          };
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop();
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (trimmed.startsWith('data: ')) {
+                const jsonStr = trimmed.substring(6).trim();
+                try {
+                  const data = JSON.parse(jsonStr);
+                  if (data.type === 'limit_reached') {
+                    const limitHtml = formatAndRender(data.final_answer || "Daily prompt limit reached. Let's connect on LinkedIn!");
+                    saveMessageToHistory(limitHtml, 'bot');
+                    return;
+                  } else if (data.type === 'chunk' && data.chunk) {
+                    accumulatedText += data.chunk;
+                    formatAndRender(accumulatedText);
+                  } else if (data.type === 'direct_answer' && data.final_answer) {
+                    accumulatedText = data.final_answer;
+                    formatAndRender(accumulatedText);
+                  }
+                } catch (e) {
+                  // Ignore JSON parse errors across chunk boundaries
+                }
+              }
+            }
+          }
+
+          if (accumulatedText) {
+            const finalHtml = formatAndRender(accumulatedText);
+            saveMessageToHistory(finalHtml, 'bot');
+          } else {
+            const fallbackHtml = formatAndRender("I've received your message! I'll get back to you soon.");
+            saveMessageToHistory(fallbackHtml, 'bot');
+          }
         }
       } catch (error) {
         console.error("Chat Error:", error);
