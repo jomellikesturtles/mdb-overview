@@ -3,7 +3,7 @@ var lazyLoading = false
 var tracking_feature = false
 const BASE_API_URL = 'https://qnvezz6gmtw3vxwmc2oxvvgncy0jnxqg.lambda-url.ap-southeast-1.on.aws';
 function trackEvent(eventName, eventArgs) {
-  if (window.umami && !!tracking_feature) {
+  if (!!tracking_feature) {
     !!eventArgs ? umami.track(eventName, eventArgs) : umami.track(eventName)
   } else {
     console.log('[Mock Umami]', eventName, eventArgs);
@@ -107,7 +107,7 @@ window.addEventListener("load", () => {
 
   // Track CV Downloads and Project Links globally
   document.addEventListener('click', (e) => {
-    if (!window.umami && !!FEATURES.tracking) return;
+    if (!!!FEATURES.tracking) return;
 
     // CV Download
     const cvBtn = e.target.closest('.cv-button');
